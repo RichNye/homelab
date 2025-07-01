@@ -45,7 +45,7 @@ module "web_vm" {
   ]
   vm_networks = [
     {
-      id     = "0"
+      id     = 0
       model  = "virtio"
       bridge = "vmbr0"
     }
@@ -72,7 +72,7 @@ module "db_vm" {
   ]
   vm_networks = [
     {
-      id     = "0"
+      id     = 0
       model  = "virtio"
       bridge = "vmbr0"
     }
@@ -86,7 +86,7 @@ module "lb_vm" {
   vm_description       = "Load Balancer VM"
   vm_cores             = 1
   vm_memory            = 1024
-  vm_tags              = "loadbalancer, haproxy"
+  vm_tags              = "loadbalancer,haproxy"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
   vm_disks = [
@@ -99,7 +99,7 @@ module "lb_vm" {
   ]
   vm_networks = [
     {
-      id     = "0"
+      id     = 0
       model  = "virtio"
       bridge = "vmbr0"
     }

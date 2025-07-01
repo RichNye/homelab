@@ -66,7 +66,7 @@ variable "vm_networks" {
   }))
   default = [
     {
-      id     = "net0"
+      id     = 0
       model  = "virtio"
       bridge = "vmbr0"
     }

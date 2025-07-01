@@ -34,6 +34,7 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
   ipconfig0  = "ip=dhcp"
   skip_ipv6  = true
   nameserver = "1.1.1.1 8.8.8.8"
+  sshkeys    = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCq5mZytr/zD0k7QLondl73NZb6J0f1Bds0vDuvMGP9XMOtfu7/pFJ8BxKG6onQPNkkZoRWZHEhCFD9JD3mUu8U4x0No+KNTTtfW6eYT1WbKuZe5H0VZYYWmVPIWJ+R04xSVSeaddtkDLdayYclWM4eG6lToZlvv3APzkoXdPZyf/iLw31LdrTRqUAvgJxgiTuhY1t/xaH2HvH22QurODypM6SX9+EBXRr2EQQD4kJgys/j0CW1X8WF1vKx+wuRxgmb2Cl+88eA02q84rkzdaMGAGWcr9+f0qulfxptMQWw5Krci3rKfKev7qj/zBb2cFm7WOR7tUfETG+1sUv930Nz ubuntu"
 
   serial {
     id = 0
