@@ -1,0 +1,25 @@
+- name: setup db servers
+  hosts: db_servers
+  remote_user: ubuntu
+  become: yes
+
+  tasks:
+  - name: install mysql servers
+    ansible.builtin.apt:
+      name: mysql-server
+      state: present
+      update_cache: yes 
+
+  - name: ensure mysql is running
+    ansible.builtin.service:
+      name: mysql
+      state: started
+      enabled: yes
+  
+  - name: create mysql mealplanner user 
+    ansible.builtin.mysql_user:
+      name: mealplanner
+      password: mealplanner
+      host: localhost
+      priv: '*.*:ALL'
+      state: present
