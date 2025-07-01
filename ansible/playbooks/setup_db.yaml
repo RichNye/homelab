@@ -10,6 +10,12 @@
       state: present
       update_cache: yes 
 
+  - name: Install PyMySQL
+    ansible.builtin.apt:
+      name: python3-pymysql
+      state: present
+      update_cache: yes
+
   - name: ensure mysql is running
     ansible.builtin.service:
       name: mysql
