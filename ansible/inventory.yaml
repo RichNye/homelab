@@ -1,0 +1,10 @@
+web_servers:
+  hosts:
+    web-01:
+database_servers:
+  hosts:
+    db-01:
+load_balancers:
+  hosts:
+    lb-01:
+
