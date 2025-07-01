@@ -1,7 +1,7 @@
 web_servers:
   hosts:
     web-01:
-database_servers:
+db_servers:
   hosts:
     db-01:
 load_balancers:
