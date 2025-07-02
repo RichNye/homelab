@@ -29,3 +29,4 @@
       host: localhost
       priv: '*.*:ALL'
       state: present
+    become: yes
