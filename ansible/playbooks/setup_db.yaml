@@ -29,6 +29,7 @@
       password: mealplanner
       state: present
     become: yes
+    become_user: postgres
 
   - name: Test PostgreSQL connection with mealplanner user
     community.postgresql.postgresql_info:
