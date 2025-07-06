@@ -46,7 +46,7 @@
     become: yes
 
   - name: Test PostgreSQL connection with mealplanner user
-    community.postgresql.postgresql_info:
+    community.postgresql.postgresql_user:
       login_user: mealplanner
       login_password: mealplanner
       login_db: mealplanner
