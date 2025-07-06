@@ -50,4 +50,6 @@
       login_user: mealplanner
       login_password: mealplanner
       login_db: mealplanner
+    become: yes
+    become_user: postgres
 
