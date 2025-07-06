@@ -49,4 +49,5 @@
     community.postgresql.postgresql_info:
       login_user: mealplanner
       login_password: mealplanner
+      login_db: mealplanner
 
