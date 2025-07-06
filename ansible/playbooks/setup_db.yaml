@@ -38,15 +38,15 @@
     become: yes
     become_user: postgres
 
-  - name: Test PostgreSQL connection with mealplanner user
-    community.postgresql.postgresql_info:
-      login_user: mealplanner
-      login_password: mealplanner
-      login_host: localhost
-
   - name: create mealplanner database
     community.postgresql.postgresql_db:
       name: mealplanner
       owner: mealplanner
       state: present
     become: yes
+
+  - name: Test PostgreSQL connection with mealplanner user
+    community.postgresql.postgresql_info:
+      login_user: mealplanner
+      login_password: mealplanner
+
