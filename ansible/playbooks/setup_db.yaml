@@ -27,8 +27,6 @@
     community.postgresql.postgresql_user:
       name: mealplanner
       password: mealplanner
-      host: localhost
-      priv: '*.*:ALL'
       state: present
     become: yes
 
@@ -45,6 +43,6 @@
       state: present
     become: yes
   
-  
+
 
     
