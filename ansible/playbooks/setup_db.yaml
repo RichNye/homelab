@@ -5,10 +5,17 @@
   tasks:
   - name: install postgres servers
     ansible.builtin.apt:
-      name: postgresql
+      name: postgresql acl
       state: present
       update_cache: yes
     become: yes
+
+  - name: install acl
+    ansible.builtin.apt:
+      name: acl
+      state: present
+      update_cache: yes
+    become: yes 
 
   - name: Install psycopg2
     ansible.builtin.apt:
@@ -43,7 +50,3 @@
       owner: mealplanner
       state: present
     become: yes
-  
-
-
-    
