@@ -3,39 +3,48 @@
   remote_user: ubuntu 
 
   tasks:
-  - name: install mysql servers
+  - name: install postgres servers
     ansible.builtin.apt:
-      name: mysql-server
+      name: postgresql
       state: present
       update_cache: yes
     become: yes
 
-  - name: Install PyMySQL
+  - name: Install psycopg2
     ansible.builtin.apt:
-      name: python3-pymysql
+      name: python3-psycopg2
       state: present
       update_cache: yes
     become: yes
 
-  - name: ensure mysql is running
+  - name: ensure postgresql is running
     ansible.builtin.service:
-      name: mysql
+      name: postgresql
       state: started
       enabled: yes
-  
-  - name: create mysql mealplanner user 
-    community.mysql.mysql_user:
+
+  - name: create postgresql mealplanner user
+    community.postgresql.postgresql_user:
       name: mealplanner
       password: mealplanner
       host: localhost
       priv: '*.*:ALL'
       state: present
-      login_unix_socket: /var/run/mysqld/mysqld.sock
     become: yes
 
-  - name: Test MySQL connection with mealplanner user
-    community.mysql.mysql_info:
+  - name: Test PostgreSQL connection with mealplanner user
+    community.postgresql.postgresql_info:
       login_user: mealplanner
       login_password: mealplanner
       login_host: localhost
+
+  - name: create mealplanner database
+    community.postgresql.postgresql_db:
+      name: mealplanner
+      owner: mealplanner
+      state: present
+    become: yes
+  
+  
+
     
