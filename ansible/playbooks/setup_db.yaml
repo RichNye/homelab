@@ -37,7 +37,7 @@
       state: present
     become: yes
     become_user: postgres
-    become_method: su
+    become_method: sudo
 
   - name: create mealplanner database
     community.postgresql.postgresql_db:
@@ -45,4 +45,6 @@
       owner: mealplanner
       state: present
     become: yes
+    become_user: postgres
+    become_method: sudo
 
