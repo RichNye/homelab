@@ -1,8 +1,64 @@
 - name: Set up web servers
   hosts: web_servers
   remote_user: ubuntu
+  become: yes
 
   tasks:
-  - name: install Docker
+  - name: Create web application directory
+    ansible.builtin.file:
+      path: /opt/MealPlannerApi
+      state: directory
+      owner: ubuntu
+      group: ubuntu
+      mode: '0755'
 
+  - name: Create environment variable file
+    ansible.builtin.copy:
+      dest: /opt/MealPlannerApi/.env
+      content: |
+        ASPNETCORE_ENVIRONMENT=Production
+        ReleaseAOrB=ReleaseA
+      owner: ubuntu
+      group: ubuntu
+      mode: '0644'
 
+  - name: Copy web application files
+    ansible.builtin.copy:
+      src: /home/ubuntu/actions-runner/_work/MealPlannerApi/MealPlannerApi/publish/
+      dest: /opt/MealPlannerApi/
+      owner: ubuntu
+      group: ubuntu
+      mode: '0755'
+      remote_src: false
+
+  - name: Create systemd service file
+    ansible.builtin.copy:
+      dest: /etc/systemd/system/mealplannerapi.service
+      content: |
+        [Unit]
+        Description=.NET Core Meal Planner API Service
+        After=network.target
+
+        [Service]
+        User=ubuntu
+        EnvironmentFile=/opt/MealPlannerApi/.env
+        WorkingDirectory=/opt/MealPlannerApi
+        ExecStart=/usr/bin/dotnet /opt/MealPlannerApi/MealPlannerApi.dll
+        Restart=always
+        RestartSec=10
+        KillSignal=SIGINT
+        SyslogIdentifier=mealplannerapi
+
+        [Install]
+        WantedBy=multi-user.target
+      mode: '0644'
+
+  - name: Reload systemd to pick up new service
+    ansible.builtin.systemd:
+      daemon_reload: yes
+
+  - name: Enable and start MealPlanner API service
+    ansible.builtin.systemd:
+      name: mealplannerapi
+      enabled: yes
+      state: started
