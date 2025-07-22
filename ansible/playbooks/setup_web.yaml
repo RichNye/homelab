@@ -67,6 +67,11 @@
     ansible.builtin.systemd:
       daemon_reload: yes
 
+  - name: Restart MealPlanner API service
+    ansible.builtin.systemd:
+      name: mealplannerapi
+      state: restarted
+
   - name: Enable and start MealPlanner API service
     ansible.builtin.systemd:
       name: mealplannerapi
