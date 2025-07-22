@@ -53,7 +53,7 @@
         User=ubuntu
         EnvironmentFile=/opt/MealPlannerApi/.env
         WorkingDirectory=/opt/MealPlannerApi
-        ExecStart=/usr/bin/dotnet /opt/MealPlannerApi/MealPlannerApi
+        ExecStart=/opt/MealPlannerApi/MealPlannerApi
         Restart=always
         RestartSec=10
         KillSignal=SIGINT
