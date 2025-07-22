@@ -16,7 +16,7 @@
     ansible.builtin.copy:
       dest: /opt/MealPlannerApi/.env
       content: |
-        ASPNETCORE_ENVIRONMENT=Production
+        ASPNETCORE_ENVIRONMENT=Development
         ReleaseAOrB=ReleaseA
       owner: ubuntu
       group: ubuntu
