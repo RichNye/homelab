@@ -48,3 +48,6 @@
     become_user: postgres
     become_method: sudo
 
+  - name: change postgresql listen address
+    ansible.builtin.lineinfile:
+
