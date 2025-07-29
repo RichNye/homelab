@@ -2,6 +2,10 @@
 *.tfstate
 *.tfstate.*
 *.exe
+*.terraform.lock.hcl
+LICENSE
+README.md
+modules.json
 
 terraform/production/terraform.tfstate
 terraform/production/terraform.tfstate.backup
