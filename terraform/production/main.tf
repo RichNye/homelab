@@ -5,7 +5,7 @@ module "ansible_vm" {
   vm_description       = "Ansible VM"
   vm_cores             = 2
   vm_memory            = 2048
-  vm_tags              = "ansible"
+  vm_tags              = "ansible,prod"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
   vm_disks = [
@@ -32,7 +32,7 @@ module "web_vm" {
   vm_description       = "Web Server VM"
   vm_cores             = 1
   vm_memory            = 1024
-  vm_tags              = "web"
+  vm_tags              = "web,prod"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
   vm_disks = [
@@ -59,7 +59,7 @@ module "db_vm" {
   vm_description       = "Database VM"
   vm_cores             = 1
   vm_memory            = 2048
-  vm_tags              = "database"
+  vm_tags              = "database,prod"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
   vm_disks = [
@@ -86,7 +86,7 @@ module "lb_vm" {
   vm_description       = "Load Balancer VM"
   vm_cores             = 1
   vm_memory            = 1024
-  vm_tags              = "loadbalancer,haproxy"
+  vm_tags              = "loadbalancer,haproxy,prod"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
   vm_disks = [
