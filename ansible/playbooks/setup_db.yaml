@@ -48,3 +48,10 @@
     become_user: postgres
     become_method: sudo
 
+  handlers:
+  - name: restart postgresql
+    ansible.builtin.service:
+      name: postgresql
+      state: restarted
+    become: yes
+

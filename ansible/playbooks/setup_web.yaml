@@ -77,3 +77,15 @@
       name: mealplannerapi
       enabled: yes
       state: started
+
+  handlers:
+  - name: restart mealplannerapi
+    ansible.builtin.systemd:
+      name: mealplannerapi
+      state: restarted
+    become: yes
+
+  - name: reload systemd
+    ansible.builtin.systemd:
+      daemon_reload: yes
+    become: yes
