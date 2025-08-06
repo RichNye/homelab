@@ -1,6 +1,6 @@
 - name: setup db servers
   hosts: db_servers
-  remote_user: ubuntu 
+  remote_user: "{{ remote_user }}"
 
   tasks:
   - name: install postgres servers
@@ -32,7 +32,7 @@
 
   - name: create postgresql mealplanner user
     community.postgresql.postgresql_user:
-      name: mealplanner
+      name: "{{ database_user }}"
       password: mealplanner
       state: present
     become: yes
@@ -41,8 +41,8 @@
 
   - name: create mealplanner database
     community.postgresql.postgresql_db:
-      name: mealplanner
-      owner: mealplanner
+      name: "{{ database_name }}"
+      owner: "{{ database_user }}"
       state: present
     become: yes
     become_user: postgres

@@ -1,43 +1,43 @@
 - name: Set up web servers
   hosts: web_servers
-  remote_user: ubuntu
+  remote_user: "{{ remote_user }}"
   become: yes
 
   tasks:
   - name: Create web application directory
     ansible.builtin.file:
-      path: /opt/MealPlannerApi
+      path: "{{ app_path }}"
       state: directory
-      owner: ubuntu
-      group: ubuntu
+      owner: "{{ remote_user }}"
+      group: "{{ remote_user }}"
       mode: '0755'
 
   - name: Create environment variable file
     ansible.builtin.copy:
-      dest: /opt/MealPlannerApi/.env
+      dest: "{{ app_path }}/.env"
       content: |
-        ASPNETCORE_ENVIRONMENT=Development
-        ReleaseAOrB=ReleaseA
-      owner: ubuntu
-      group: ubuntu
+        "ASPNETCORE_ENVIRONMENT={{ environment }}
+        ReleaseAOrB=ReleaseA"
+      owner: "{{ remote_user }}"
+      group: "{{ remote_user }}"
       mode: '0644'
 
   - name: Copy web application files
     ansible.builtin.copy:
       src: /home/ubuntu/actions-runner/_work/MealPlannerApi/MealPlannerApi/publish/
-      dest: /opt/MealPlannerApi/
-      owner: ubuntu
-      group: ubuntu
+      dest: "{{ app_path }}"
+      owner: "{{ remote_user }}"
+      group: "{{ remote_user }}"
       mode: '0755'
       remote_src: false
     become: yes
 
   - name: Ensure MealPlannerApi binary is executable
     ansible.builtin.file:
-      path: /opt/MealPlannerApi/MealPlannerApi
+      path: "{{ app_path }}/MealPlannerApi"
       mode: '0755'
-      owner: ubuntu
-      group: ubuntu
+      owner: "{{ remote_user }}"
+      group: "{{ remote_user }}"
       state: file
     become: yes
 
@@ -51,9 +51,9 @@
 
         [Service]
         User=ubuntu
-        EnvironmentFile=/opt/MealPlannerApi/.env
-        WorkingDirectory=/opt/MealPlannerApi
-        ExecStart=/opt/MealPlannerApi/MealPlannerApi
+        EnvironmentFile={{ app_path }}/.env
+        WorkingDirectory={{ app_path }}
+        ExecStart={{ app_path }}/MealPlannerApi
         Restart=always
         RestartSec=10
         KillSignal=SIGINT
