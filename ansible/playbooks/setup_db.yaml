@@ -1,6 +1,7 @@
 - name: setup db servers
   hosts: db_servers
   remote_user: "{{ remote_user }}"
+  become: yes
 
   tasks:
   - name: install postgres servers
@@ -8,21 +9,18 @@
       name: postgresql
       state: present
       update_cache: yes
-    become: yes
 
   - name: install acl
     ansible.builtin.apt:
       name: acl
       state: present
       update_cache: yes
-    become: yes 
 
   - name: Install psycopg2
     ansible.builtin.apt:
       name: python3-psycopg2
       state: present
       update_cache: yes
-    become: yes
 
   - name: ensure postgresql is running
     ansible.builtin.service:
@@ -53,5 +51,4 @@
     ansible.builtin.service:
       name: postgresql
       state: restarted
-    become: yes
 
