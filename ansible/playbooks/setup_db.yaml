@@ -57,6 +57,8 @@
     community.postgresql.postgresql_set:
       name: listen_addresses
       value: '*'
+    become_user: postgres
+    become_method: sudo
     notify:
       - restart postgresql
 
