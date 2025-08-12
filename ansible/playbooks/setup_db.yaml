@@ -10,15 +10,11 @@
       state: present
       update_cache: yes
 
-  - name: install acl
+  - name: install required packages
     ansible.builtin.apt:
-      name: acl
-      state: present
-      update_cache: yes
-
-  - name: Install psycopg2
-    ansible.builtin.apt:
-      name: python3-psycopg2
+      name:
+        - acl
+        - psycopg2
       state: present
       update_cache: yes
 
@@ -45,10 +41,4 @@
     become: yes
     become_user: postgres
     become_method: sudo
-
-  handlers:
-  - name: restart postgresql
-    ansible.builtin.service:
-      name: postgresql
-      state: restarted
 
