@@ -1,7 +1,6 @@
-vars:
-  environment_prefix: dev-
-  remote_user: ubuntu
-  database_name: mealplanner
-  database_user: mealplanner
-  app_path: /opt/MealPlannerApi
-  environment: Development
+environment_prefix: dev-
+remote_user: ubuntu
+database_name: mealplanner
+database_user: mealplanner
+app_path: /opt/MealPlannerApi
+environment: Development
