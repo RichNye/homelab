@@ -3,3 +3,4 @@ database_name: mealplanner
 database_user: mealplanner
 app_path: /opt/MealPlannerApi
 environment: Development
+local_subnet: 192.168.178.0/24

@@ -42,3 +42,20 @@
     become_user: postgres
     become_method: sudo
 
+  - name: add mealplanner user to pg_hba.conf
+    community.postgresql.postgresql_pg_hba:
+      dest: /etc/postgresql/12/main/pg_hba.conf
+      contype: host
+      user: "{{ database_user }}"
+      source: "{{ local_subnet }}"
+      databases: "{{ database_name }}"
+      method: md5
+    notify:
+      - restart postgresql
+
+  handlers:
+  - name: restart postgresql
+    ansible.builtin.service:
+      name: postgresql
+      state: restarted
+
