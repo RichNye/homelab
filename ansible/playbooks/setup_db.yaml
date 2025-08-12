@@ -4,15 +4,10 @@
   become: yes
 
   tasks:
-  - name: install postgres servers
-    ansible.builtin.apt:
-      name: postgresql
-      state: present
-      update_cache: yes
-
   - name: install required packages
     ansible.builtin.apt:
       name:
+        - postgresql
         - acl
         - python3-psycopg2
       state: present
@@ -29,7 +24,6 @@
       name: "{{ database_user }}"
       password: mealplanner
       state: present
-    become: yes
     become_user: postgres
     become_method: sudo
 
@@ -38,7 +32,6 @@
       name: "{{ database_name }}"
       owner: "{{ database_user }}"
       state: present
-    become: yes
     become_user: postgres
     become_method: sudo
 
