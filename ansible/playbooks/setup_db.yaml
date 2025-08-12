@@ -54,9 +54,9 @@
       - restart postgresql
 
   - name: change listening address in postgresql.conf
-    community.postgresql.postgresql_set:
-      name: listen_addresses
-      value: '*'
+    community.postgresql.postgresql_alter_system:
+      param: listen_addresses
+      value: "*"
     become_user: postgres
     become_method: sudo
     notify:
