@@ -22,7 +22,7 @@
   - name: create postgresql mealplanner user
     community.postgresql.postgresql_user:
       name: "{{ database_user }}"
-      password: mealplanner
+      password: "{{ database_password }}"
       state: present
     become_user: postgres
     become_method: sudo

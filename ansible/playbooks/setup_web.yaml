@@ -21,11 +21,6 @@
       group: "{{ remote_user }}"
       mode: "0644"
 
-  - name: create environment variables
-    ansible.builtin.lineinfile:
-      
-
-
   - name: Copy web application files
     ansible.builtin.copy:
       src: /home/ubuntu/actions-runner/_work/MealPlannerApi/MealPlannerApi/publish/
