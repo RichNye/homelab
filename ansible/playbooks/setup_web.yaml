@@ -10,17 +10,21 @@
       state: directory
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
-      mode: '0755'
+      mode: "0755"
 
   - name: Create environment variable file
     ansible.builtin.copy:
       dest: "{{ app_path }}/.env"
       content: |
-        "ASPNETCORE_ENVIRONMENT={{ environment }}
-        ReleaseAOrB=ReleaseA"
+        ASPNETCORE_ENVIRONMENT="{{ environment }}"        
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
-      mode: '0644'
+      mode: "0644"
+
+  - name: create environment variables
+    ansible.builtin.lineinfile:
+      
+
 
   - name: Copy web application files
     ansible.builtin.copy:
@@ -28,18 +32,18 @@
       dest: "{{ app_path }}"
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
-      mode: '0755'
+      mode: "0755"
       remote_src: false
-    become: yes
 
   - name: Ensure MealPlannerApi binary is executable
     ansible.builtin.file:
       path: "{{ app_path }}/MealPlannerApi"
-      mode: '0755'
+      mode: "0755"
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
       state: file
-    become: yes
+    notify:
+      - restart mealplannerapi
 
   - name: Create systemd service file
     ansible.builtin.copy:
@@ -61,8 +65,8 @@
 
         [Install]
         WantedBy=multi-user.target
-      mode: '0644'
-      notify:
+      mode: "0644"
+    notify:
       - reload systemd
       - restart mealplannerapi
 
@@ -71,14 +75,15 @@
       name: mealplannerapi
       enabled: yes
       state: started
-  
+
+  handlers:
   - name: reload systemd
     ansible.builtin.systemd:
       daemon_reload: yes
 
-  handlers:
   - name: restart mealplannerapi
     ansible.builtin.systemd:
       name: mealplannerapi
       state: restarted
+  
 
