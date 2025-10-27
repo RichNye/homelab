@@ -1,28 +1,17 @@
 - name: setup db servers
   hosts: db_servers
-  remote_user: ubuntu 
+  remote_user: "{{ remote_user }}"
+  become: yes
 
   tasks:
-  - name: install postgres servers
+  - name: install required packages
     ansible.builtin.apt:
-      name: postgresql
+      name:
+        - postgresql
+        - acl
+        - python3-psycopg2
       state: present
       update_cache: yes
-    become: yes
-
-  - name: install acl
-    ansible.builtin.apt:
-      name: acl
-      state: present
-      update_cache: yes
-    become: yes 
-
-  - name: Install psycopg2
-    ansible.builtin.apt:
-      name: python3-psycopg2
-      state: present
-      update_cache: yes
-    become: yes
 
   - name: ensure postgresql is running
     ansible.builtin.service:
@@ -32,19 +21,43 @@
 
   - name: create postgresql mealplanner user
     community.postgresql.postgresql_user:
-      name: mealplanner
-      password: mealplanner
+      name: "{{ database_user }}"
+      password: "{{ database_password }}"
       state: present
-    become: yes
     become_user: postgres
     become_method: sudo
 
   - name: create mealplanner database
     community.postgresql.postgresql_db:
-      name: mealplanner
-      owner: mealplanner
+      name: "{{ database_name }}"
+      owner: "{{ database_user }}"
       state: present
-    become: yes
     become_user: postgres
     become_method: sudo
+
+  - name: add mealplanner user to pg_hba.conf
+    community.postgresql.postgresql_pg_hba:
+      dest: /etc/postgresql/16/main/pg_hba.conf
+      contype: host
+      users: "{{ database_user }}"
+      source: "{{ local_subnet }}"
+      databases: "{{ database_name }}"
+      method: md5
+    notify:
+      - restart postgresql
+
+  - name: change listening address in postgresql.conf
+    community.postgresql.postgresql_alter_system:
+      param: listen_addresses
+      value: "*"
+    become_user: postgres
+    become_method: sudo
+    notify:
+      - restart postgresql
+
+  handlers:
+  - name: restart postgresql
+    ansible.builtin.service:
+      name: postgresql
+      state: restarted
 

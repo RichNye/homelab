@@ -1,0 +1,11 @@
+all:
+  children:
+    web_servers:
+      hosts:
+        dev-web-01:
+    db_servers:
+      hosts:
+        dev-db-01:
+    load_balancers:
+      hosts:
+        dev-web-01:
