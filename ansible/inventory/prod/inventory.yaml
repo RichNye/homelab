@@ -8,4 +8,4 @@ all:
         db-01:
     load_balancers:
       hosts:
-        web-01:
+        lb-01:
