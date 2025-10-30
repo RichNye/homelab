@@ -40,8 +40,8 @@ backend api_servers
 
 backend web_servers
     balance roundrobin
-    option httpchk GET /swagger/index.html
+    option httpchk GET /index.html
     default-server check maxconn 2000
     {% for host in groups.web_servers %}
-    server {{ host }} {{ host }}:8080
+    server {{ host }} {{ host }}:8090
     {% endfor %}
