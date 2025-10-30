@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Seven Random Rows</title>
+  <title>Meal Planner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; }
@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h1>Seven Random Rows</h1>
+  <h1>Meal Planner</h1>
 
   <div id="status">Loading…</div>
   <div id="rows"></div>
@@ -40,7 +40,7 @@
           return;
         }
 
-        status.textContent = `Showing ${list.length} row${list.length === 1 ? '' : 's'}.`;
+        status.textContent = `Showing ${list.length} meal${list.length === 1 ? '' : 's'}.`;
         for (const item of list) {
           const pre = document.createElement('pre');
           pre.textContent = typeof item === 'object' ? JSON.stringify(item, null, 2) : String(item);
