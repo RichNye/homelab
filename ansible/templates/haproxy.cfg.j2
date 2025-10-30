@@ -30,7 +30,6 @@ frontend mealplannerapi
     use_backend api_servers if { path_beg /api/ }
     default_backend web_servers
 
-
 backend api_servers
     balance roundrobin
     option httpchk HEAD /api/recipes
