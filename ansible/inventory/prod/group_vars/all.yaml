@@ -2,6 +2,7 @@ remote_user: ubuntu
 database_name: mealplanner
 database_user: mealplanner
 app_path: /opt/MealPlannerApi
+web_app_path: /opt/MealPlannerWeb
 app_environment: Development
 local_subnet: 192.168.178.0/24
 database_password: !vault |

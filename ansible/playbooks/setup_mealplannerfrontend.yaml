@@ -1,0 +1,54 @@
+- name: Set up MealPlannerWeb application
+  hosts: web_servers
+  remote_user: "{{ remote_user }}"
+  become: yes
+
+  tasks:
+    - name: Create web application directory
+      ansible.builtin.file:
+        path: "{{ web_app_path }}"
+        state: directory
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"
+        mode: "0755"
+
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Copy web application files
+      ansible.builtin.copy:
+        src: templates/MealPlannerWeb/index.html
+        dest: "{{ web_app_path }}/index.html"
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"
+        mode: "0644"
+
+    - name: Copy nginx config
+      ansible.builtin.template:
+        src: templates/MealPlannerWeb/nginx.cfg
+        dest: /etc/nginx/sites-available/mealplannerweb
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart nginx
+
+    - name: Enable nginx site
+      ansible.builtin.file:
+        src: /etc/nginx/sites-available/mealplannerweb
+        dest: /etc/nginx/sites-enabled/mealplannerweb
+        state: link
+
+    - name: Disable default nginx site
+      ansible.builtin.file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+  handlers:
+    - name: restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+        enabled: yes
