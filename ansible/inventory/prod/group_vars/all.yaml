@@ -2,7 +2,7 @@ remote_user: ubuntu
 database_name: mealplanner
 database_user: mealplanner
 app_path: /opt/MealPlannerApi
-environment: Development
+app_environment: Development
 local_subnet: 192.168.178.0/24
 database_password: !vault |
           $ANSIBLE_VAULT;1.1;AES256
