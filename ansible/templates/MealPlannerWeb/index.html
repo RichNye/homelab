@@ -5,45 +5,89 @@
   <title>Meal Planner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root { color-scheme: light dark; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 2rem; line-height: 1.45; }
-    h1 { margin-bottom: .5rem; }
-    #status { margin: .5rem 0 1rem; opacity: .8; }
-    .meal { border: 1px solid #ddd; border-radius: .6rem; padding: .9rem 1rem; margin-bottom: .8rem; background: #fff; }
-    .meal h2 { font-size: 1.05rem; margin: 0 0 .3rem; }
-    .meal p { margin: 0; opacity: .9; }
-    button { cursor: pointer; padding: .6rem 1rem; border-radius: .5rem; border: 1px solid #ccc; background: #fff; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f7f7f9;
+      color: #222;
+      margin: 2rem auto;
+      max-width: 700px;
+      line-height: 1.6;
+      padding: 0 1rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    #status {
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #555;
+    }
+    .meal {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .meal h2 {
+      font-size: 1.2rem;
+      margin: 0 0 .4rem;
+      color: #111;
+    }
+    .meal p {
+      margin: 0;
+      color: #444;
+    }
+    button {
+      display: block;
+      margin: 1.5rem auto;
+      cursor: pointer;
+      padding: 0.6rem 1.3rem;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      background: #fafafa;
+      color: #222;
+      font-size: 1rem;
+      transition: background .2s, transform .1s;
+    }
+    button:hover {
+      background: #eee;
+    }
+    button:active {
+      transform: scale(0.98);
+    }
   </style>
 </head>
 <body>
   <h1>Meal Planner</h1>
-
   <div id="status">Loading…</div>
   <div id="rows" aria-live="polite"></div>
-  <p><button id="reload">Give me new meals!</button></p>
+  <button id="reload">Give me new meals!</button>
 
   <script>
-    // Use a relative path so it matches whatever domain/scheme served this page.
-    const API_URL = "https://meals.rnye.tech/api/recipes";
+    const API_URL = "/api/recipes";
 
-    const normalise = v => (v ?? "").toString().trim();
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
     function render(meals) {
       const rows = document.getElementById('rows');
       rows.innerHTML = '';
-      for (const m of meals) {
-        const name = normalise(m.name) || "Untitled meal";
-        const descRaw = normalise(m.description);
-        const desc = (descRaw && descRaw.toUpperCase() !== "N/A") ? descRaw : "No description provided.";
+      for (const meal of meals) {
+        const name = meal.name?.trim() || "Untitled meal";
+        const descRaw = meal.description?.trim() || "";
+        const desc = descRaw && descRaw.toUpperCase() !== "N/A" ? descRaw : "No description provided.";
         const card = document.createElement('article');
         card.className = 'meal';
         card.innerHTML = `<h2>${escapeHtml(name)}</h2><p>${escapeHtml(desc)}</p>`;
         rows.appendChild(card);
       }
-    }
-
-    // Simple HTML escaper so names/descriptions render safely.
-    function escapeHtml(s) {
-      return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
     async function load() {
@@ -62,7 +106,7 @@
         status.textContent = `Showing ${list.length} meal${list.length === 1 ? '' : 's'}.`;
         render(list);
       } catch (err) {
-        status.textContent = `Error: ${err.message}.`;
+        status.textContent = `Error: ${err.message}`;
         document.getElementById('rows').innerHTML = '';
       }
     }
