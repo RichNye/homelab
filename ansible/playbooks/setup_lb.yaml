@@ -1,0 +1,31 @@
+- name: setup load balancers 
+  hosts: lb_servers
+  remote_user: "{{ remote_user }}"
+  become: yes
+
+  tasks: 
+  - name: install required packages
+    ansible.builtin.apt:
+      name:
+        - haproxy
+      state: present
+      update_cache: yes
+  
+  - name: generate haproxy config from template
+    ansible.builtin.template:
+      src: ../templates/haproxy.cfg.j2
+      dest: /etc/haproxy/haproxy.cfg
+    notify:
+      - restart haproxy
+
+  - name: ensure haproxy service is enabled and running
+    ansible.builtin.service:
+      name: haproxy
+      state: started
+      enabled: yes
+  
+  handlers:
+  - name: restart haproxy
+    ansible.builtin.service:
+      name: haproxy
+      state: restarted
