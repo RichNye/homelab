@@ -18,7 +18,7 @@ defaults
 
 frontend stats
     mode http
-    bind:8505
+    bind *:8505
     stats enable
     stats refresh 10s
     stats uri /stats
