@@ -16,6 +16,14 @@ defaults
     option httplog
     maxconn 5000
 
+frontend stats
+    mode http
+    bind:8505
+    stats enable
+    stats refresh 10s
+    stats uri /stats
+    stats show-modules
+
 frontend mealplannerapi
     bind *:80
     bind *:443
@@ -25,7 +33,7 @@ frontend mealplannerapi
 
 backend api_servers
     balance roundrobin
-    option httpchk HEAD /
+    option httpchk HEAD /api/recipes
     default-server check maxconn 20
     {% for host in groups.web_servers %}
     server {{ host }} {{ host }}:8080
@@ -33,7 +41,7 @@ backend api_servers
 
 backend web_servers
     balance roundrobin
-    option httpchk HEAD /
+    option httpchk HEAD /swagger/index.html
     default-server check maxconn 2000
     {% for host in groups.web_servers %}
     server {{ host }} {{ host }}:8080
