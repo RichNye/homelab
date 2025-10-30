@@ -32,7 +32,7 @@ frontend mealplannerapi
 
 backend api_servers
     balance roundrobin
-    option httpchk HEAD /api/recipes
+    option httpchk GET /api/recipes
     default-server check maxconn 20
     {% for host in groups.web_servers %}
     server {{ host }} {{ host }}:8080
@@ -40,7 +40,7 @@ backend api_servers
 
 backend web_servers
     balance roundrobin
-    option httpchk HEAD /swagger/index.html
+    option httpchk GET /swagger/index.html
     default-server check maxconn 2000
     {% for host in groups.web_servers %}
     server {{ host }} {{ host }}:8080
