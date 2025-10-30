@@ -81,7 +81,7 @@ module "db_vm" {
 
 module "lb_vm" {
   source = "../modules/ubuntu_vm"
-
+  count = 1
   vm_name              = "lb-01"
   vm_description       = "Load Balancer VM"
   vm_cores             = 1
