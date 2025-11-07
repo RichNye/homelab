@@ -105,3 +105,31 @@ module "lb_vm" {
     }
   ]
 }
+
+module "monitor_vm" {
+  source = "../modules/ubuntu_vm"
+
+  vm_name = "monitor-01"
+  vm_description = "Monitoring VM"
+  vm_cores = 1
+  vm_memory = 1024
+  vm_tags = "monitoring,prometheus,grafana"
+  proxmox_host = "RN-PROXMOX01"
+  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
+
+  vm_disks = [
+    {
+      slot = "virtio0"
+      size = "32G"
+      storage = "data-hdd"
+      type = "disk"
+    }
+  ]
+  vm_networks = [
+    {
+      id = 0
+      model = "virtio"
+      bridge = "vmbr0"
+    }
+  ]
+}
