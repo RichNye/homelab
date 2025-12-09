@@ -24,6 +24,12 @@ frontend stats
     stats uri /stats
     stats show-modules
 
+frontend prometheus
+    mode http
+    bind *:8505
+    http-request use-service prometheus-exporter
+    no log
+
 frontend mealplannerapi
     bind *:80
     bind *:443
