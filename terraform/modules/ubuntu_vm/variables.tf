@@ -88,3 +88,101 @@ variable "cloudinit_password" {
     type = string
     sensitive = true
 }
+
+variable "scsihw" {
+  description = "SCSI hardware type in Proxmox"
+  type = string
+  default = "virtio-scsi-pci"
+}
+
+variable "boot_order" {
+  description = "Disk boot order"
+  type = string
+  default = "order=virtio0"
+}
+
+variable "hotplug" {
+  description = "hotplug config"
+  type = string
+  default = "disk,network,usb"
+}
+
+variable "bios_type" {
+  description = "BIOS type for VMs"
+  type = string
+  default = "ovmf"
+}
+
+variable "machine_type" {
+  description = "Proxmox machine type"
+  type = string
+  default = "q35"
+}
+
+variable "ciupgrade" {
+  description = "sets the ciupgrade flag"
+  type = bool
+  default = true
+}
+
+variable "cicustom_string" {
+  description = "cicustom string"
+  type = string
+  default = "vendor=local:snippets/vendor.yaml"
+}
+
+variable "ci_ipconfig0" {
+  description = "cloudinit ipconfig0 configuration"
+  type = string
+  default = "ip=dhcp"
+}
+
+variable "skip_ipv6" {
+  description = "cloudinit - choose whether to skip ipv6"
+  type = bool
+  default = true
+}
+
+variable "cloudinit_nameservers" {
+  description = "DNS servers used by cloudinit - space seperated list in string format"
+  type = string
+  default = "1.1.1.1 8.8.8.8"
+}
+
+variable "serial_id" {
+  description = "ID of virtual serial port"
+  type = number
+  default = 0
+}
+
+variable "cloudinit_diskconfig" {
+  description = "Defines the cloudinit disk config"
+  type = object({
+    slot = string
+    storage = string
+    type = string
+  })
+  default = {
+    slot = "scsi1"
+    storage = "data-hdd"
+    type = "cloudinit"
+  }  
+}
+
+variable "full_clone" {
+  description = "Specify full clone of the template"
+  type = bool
+  default = true
+}
+
+variable "qemu_agent" {
+  description = "Choose whether to install the qemu guest agent"
+  type = number
+  default = 1
+}
+
+variable "sockets" {
+  description = "specify number of CPU sockets"
+  type = number
+  default = 1
+}

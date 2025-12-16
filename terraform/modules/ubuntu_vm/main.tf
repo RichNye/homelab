@@ -14,30 +14,30 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
 
   target_node = var.proxmox_host
   clone       = var.ubuntu_template_name
-  full_clone  = true
-  agent       = 1
-  sockets     = 1
+  full_clone  = var.full_clone
+  agent       = var.qemu_agent
+  sockets     = var.sockets
   cores       = var.vm_cores
   memory      = var.vm_memory
-  scsihw      = "virtio-scsi-pci"
+  scsihw      = var.scsihw
   tags        = var.vm_tags
-  boot        = "order=virtio0"
-  hotplug     = "disk,network,usb"
-  bios        = "ovmf"
-  machine     = "q35"
+  boot        = var.boot_order
+  hotplug     = var.hotplug
+  bios        = var.bios_type
+  machine     = var.machine_type
 
   # cloud-init settings
   ciuser     = var.cloudinit_username
   cipassword = var.cloudinit_password
-  ciupgrade  = true
-  cicustom   = "vendor=local:snippets/vendor.yaml"
-  ipconfig0  = "ip=dhcp"
-  skip_ipv6  = true
-  nameserver = "1.1.1.1 8.8.8.8"
+  ciupgrade  = var.ciupgrade
+  cicustom   = var.cicustom_string
+  ipconfig0  = var.ci_ipconfig0
+  skip_ipv6  = var.skip_ipv6
+  nameserver = var.cloudinit_nameservers
   sshkeys    = var.ssh_public_key
 
   serial {
-    id = 0
+    id = var.serial_id
   }
 
   dynamic "disk" {
@@ -52,9 +52,9 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
 
   # disk outside of the loop to ensure cloudinit always exists where the template needs it.
   disk {
-    slot    = "scsi1"
-    storage = "data-hdd"
-    type    = "cloudinit"
+    slot    = var.cloudinit_diskconfig.slot
+    storage = var.cloudinit_diskconfig.storage
+    type    = var.cloudinit_diskconfig.type
   }
 
   dynamic "network" {
