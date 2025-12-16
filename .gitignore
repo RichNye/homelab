@@ -7,6 +7,9 @@ LICENSE
 README.md
 modules.json
 MealPlannerApi
+*.tfvars
+*.auto.tfvars
+*.lock.hcl
 
 terraform/production/terraform.tfstate
 terraform/production/terraform.tfstate.backup
