@@ -81,6 +81,7 @@ variable ssh_public_key {
 variable cloudinit_username {
     description = "cloudinit user username"
     type = string
+    default = "ubuntu"
 }
 
 variable cloudinit_password {
