@@ -1,17 +1,13 @@
-*/.terraform/*
+# Terraform working directory
+.terraform/
+
+# Terraform state files
 *.tfstate
 *.tfstate.*
-*.exe
-*.terraform.lock.hcl
-LICENSE
-README.md
-modules.json
-MealPlannerApi
+
+# Terraform variable files (often contain secrets)
 *.tfvars
 *.auto.tfvars
-*.lock.hcl
 
-terraform/production/terraform.tfstate
-terraform/production/terraform.tfstate.backup
-terraform/production/.terraform/providers/registry.terraform.io/telmate/proxmox/3.0.1-rc8/windows_amd64/LICENSE
-terraform/production/.terraform/providers/registry.terraform.io/telmate/proxmox/3.0.1-rc8/windows_amd64/README.md
+# OS / tooling artefacts
+*.exe
