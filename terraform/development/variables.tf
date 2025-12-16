@@ -1,5 +1,5 @@
 variable "ssh_public_key" {
-    description = "ssh key for all production VMs"
+    description = "ssh key for cloudinit user access"
     type = string
 }
 

@@ -73,18 +73,17 @@ variable "vm_networks" {
   ]
 }
 
-variable ssh_public_key {
-    description = "ssh key for all production VMs"
+variable "ssh_public_key" {
+    description = "ssh key for cloudinit user access"
     type = string
 }
 
-variable cloudinit_username {
+variable "cloudinit_username" {
     description = "cloudinit user username"
     type = string
-    default = "ubuntu"
 }
 
-variable cloudinit_password {
+variable "cloudinit_password" {
     description = "cloudinit user password"
     type = string
     sensitive = true
