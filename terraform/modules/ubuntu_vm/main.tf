@@ -23,8 +23,8 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
   tags        = var.vm_tags
   boot        = var.boot_order
   hotplug     = var.hotplug
-  bios        = var.bios_type
-  machine     = var.machine_type
+  bios        = var.bios_type # not hardcoded because I value experimentation here
+  machine     = var.machine_type # same rationale as BIOS.
 
   # cloud-init settings
   ciuser     = var.cloudinit_username
