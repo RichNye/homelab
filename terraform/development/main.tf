@@ -8,6 +8,10 @@ module "web_vm_dev" {
   vm_tags              = "web,dev,loadbalancer,haproxy"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
+  ssh_public_key       = var.ssh_public_key
+  cloudinit_username   = var.cloudinit_username
+  cloudinit_password   = var.cloudinit_password
+
   vm_disks = [
     {
       slot    = "virtio0"
@@ -35,6 +39,10 @@ module "db_vm_dev" {
   vm_tags              = "database,dev,postgres"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
+  ssh_public_key       = var.ssh_public_key
+  cloudinit_username   = var.cloudinit_username
+  cloudinit_password   = var.cloudinit_password
+
   vm_disks = [
     {
       slot    = "virtio0"

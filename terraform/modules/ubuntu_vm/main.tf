@@ -40,21 +40,22 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
     id = var.serial_id
   }
 
-  dynamic "disk" {
-    for_each = var.vm_disks
-    content {
-      slot    = disk.value.slot
-      size    = disk.value.size
-      storage = disk.value.storage
-      type    = disk.value.type
-    }
-  }
-
   # disk outside of the loop to ensure cloudinit always exists where the template needs it.
   disk {
     slot    = var.cloudinit_diskconfig.slot
     storage = var.cloudinit_diskconfig.storage
     type    = var.cloudinit_diskconfig.type
+  }
+
+  dynamic "disk" {
+    for_each = var.vm_disks
+    content {
+      format = "raw"
+      slot    = disk.value.slot
+      size    = disk.value.size
+      storage = disk.value.storage
+      type    = disk.value.type
+    }
   }
 
   dynamic "network" {
