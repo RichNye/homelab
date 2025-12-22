@@ -1,11 +1,15 @@
-variable "proxmox_host" {
-    description = "proxmox host for the VM"
+variable "ssh_public_key" {
+    description = "ssh key for cloudinit user access"
     type = string
-    default = "RN-PROXMOX01"
 }
 
-variable "ubuntu_template" {
-    description = "Ubuntu template"
+variable "cloudinit_username" {
+    description = "cloudinit user username"
     type = string
-    default = "ubuntu-2404-cloudinit-template"
+}
+
+variable "cloudinit_password" {
+    description = "cloudinit user password"
+    type = string
+    sensitive = true
 }
