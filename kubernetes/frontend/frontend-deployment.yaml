@@ -17,4 +17,4 @@ spec:
       - name: mealplanner-web
         image: richn987/mealplannerfrontend:main
         ports:
-        - containerPort: 80
+        - containerPort: 8090
