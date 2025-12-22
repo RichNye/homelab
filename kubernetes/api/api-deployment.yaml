@@ -18,3 +18,15 @@ spec:
         image: richn987/mealplannerapi:master
         ports:
         - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: mp-api-config
+              key: aspnetcore_environment
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: mp-api-secret
+              key: connectionstrings__defaultconnection
+          
