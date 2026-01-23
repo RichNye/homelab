@@ -34,6 +34,14 @@
       state: present
     become_user: postgres
     become_method: sudo
+  
+  - name: Grant pg_monitor role to prometheus user
+    community.postgresql.postgresql_membership:
+      name: {{ monitoring_user }}
+      groups: pg_monitor
+      state: present
+    become_user: postgres
+    become_method: sudo
 
   - name: create mealplanner database
     community.postgresql.postgresql_db:
