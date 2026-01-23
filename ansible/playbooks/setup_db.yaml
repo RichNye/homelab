@@ -27,6 +27,14 @@
     become_user: postgres
     become_method: sudo
 
+  - name: create monitoring user
+    community.postgresql.postgresql_user:
+      name: "{{ monitoring_user }}"
+      password: "{{ monitoring_password }}"
+      state: present
+    become_user: postgres
+    become_method: sudo
+
   - name: create mealplanner database
     community.postgresql.postgresql_db:
       name: "{{ database_name }}"
