@@ -37,7 +37,7 @@
   
   - name: Grant pg_monitor role to prometheus user
     community.postgresql.postgresql_membership:
-      name: {{ monitoring_user }}
+      name: "{{ monitoring_user }}"
       groups: pg_monitor
       state: present
     become_user: postgres
