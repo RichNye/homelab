@@ -64,6 +64,17 @@
     notify:
       - restart postgresql
 
+  - name: add monitoring user to pg_hba.conf
+    community.postgresql.postgresql_pg_hba:
+      dest: /etc/postgresql/16/main/pg_hba.conf
+      contype: host
+      users: "{{ monitoring_user }}"
+      source: "{{ local_subnet }}"
+      databases: all
+      method: md5
+    notify:
+      - restart postgresql
+
   - name: change listening address in postgresql.conf
     community.postgresql.postgresql_alter_system:
       param: listen_addresses
