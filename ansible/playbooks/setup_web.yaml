@@ -4,6 +4,11 @@
   become: yes
 
   tasks:
+  - name: Check current release version on server
+    set_fact:
+      app_release: "{{ ansible_env.APP_RELEASE | default('UNSET') }}"
+      app_release_matches: "{{ app_release == mealplanner_release }}"
+
   - name: Create web application directory
     ansible.builtin.file:
       path: "{{ app_path }}"
@@ -23,12 +28,17 @@
 
   - name: Copy web application files
     ansible.builtin.copy:
-      src: /home/ubuntu/actions-runner/_work/MealPlannerApi/MealPlannerApi/publish/
+      src: "/home/ubuntu/actions-runner/_work/MealPlannerApi/MealPlannerApi/publish/release-{{ mealplanner_release }}/"
       dest: "{{ app_path }}"
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
       mode: "0755"
       remote_src: false
+    when: not app_release_matches
+    notify:
+      - restart mealplannerapi
+      - set app_release
+    
 
   - name: Ensure MealPlannerApi binary is executable
     ansible.builtin.file:
@@ -80,5 +90,12 @@
     ansible.builtin.systemd:
       name: mealplannerapi
       state: restarted
+  
+  - name: set app_release environment variable
+    ansible.builtin.lineinfile:
+      path: /etc/environment
+      regexp: '^APP_RELEASE='
+      line: "APP_RELEASE={{ mealplanner_release }}"
+      create: yes
   
 
