@@ -7,7 +7,6 @@
   - name: Read current release version on server
     set_fact:
       app_release: "{{ ansible_env.APP_RELEASE | default('UNSET') }}"
-      
 
   - name: Check current release vs server variable
     set_fact:
@@ -39,11 +38,11 @@
       mode: "0755"
       remote_src: false
     when: not app_release_matches
+    changed_when: true
     notify:
       - restart mealplannerapi
-      - set app_release
+      - set app_release environment variable
     
-
   - name: Ensure MealPlannerApi binary is executable
     ansible.builtin.file:
       path: "{{ app_path }}/MealPlannerApi"
