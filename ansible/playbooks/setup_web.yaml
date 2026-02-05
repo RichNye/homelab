@@ -14,7 +14,7 @@
 
   - name: output current release values
     ansible.builtin.debug:
-      msg: Environment variable is {{ app_release }} and app_release_matches is {{ app_release_matches }}
+      msg: Environment variable is {{ ansible_env.APP_RELEASE }}, ansible playbook variable is {{ app_release }}, and app_release_matches is {{ app_release_matches }}
 
   - name: Create web application directory
     ansible.builtin.file:
