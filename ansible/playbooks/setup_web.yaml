@@ -35,7 +35,7 @@
 
   - name: Copy web application files
     ansible.builtin.copy:
-      src: "/home/ubuntu/actions-runner/_work/MealPlannerApi/MealPlannerApi/publish/release-{{ mealplanner_release }}/"
+      src: "/opt/MealPlannerApi/releases/release-{{ mealplanner_release }}/"
       dest: "{{ app_path }}"
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
