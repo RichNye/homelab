@@ -4,9 +4,13 @@
   become: yes
 
   tasks:
-  - name: Check current release version on server
+  - name: Read current release version on server
     set_fact:
       app_release: "{{ ansible_env.APP_RELEASE | default('UNSET') }}"
+      
+
+  - name: Check current release vs server variable
+    set_fact:
       app_release_matches: "{{ app_release == mealplanner_release }}"
 
   - name: Create web application directory
