@@ -31,7 +31,7 @@ cd "$repo_root" || exit 1
 echo "Pulling latest updates from GitHub..."
 git checkout "$branch"
 
-playbook_path="$repo_root/$playbooks_dir/$role.yaml"
+playbook_path="$repo_root/$playbooks_dir/setup_$role.yaml"
 inventory_path="$repo_root/$inventory_dir/$environment/inventory.yaml"
 
 if [ ! -f "$playbook_path" ]; then
