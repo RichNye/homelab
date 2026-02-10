@@ -4,6 +4,18 @@
   become: yes
 
   tasks:
+  - name: Read current release version on server
+    set_fact:
+      app_release: "{{ ansible_env.APP_RELEASE | default('UNSET') }}"
+
+  - name: Check current release vs server variable
+    set_fact:
+      app_release_matches: "{{ app_release == mealplanner_release }}"
+
+  - name: output current release values
+    ansible.builtin.debug:
+      msg: Environment variable is {{ ansible_env.APP_RELEASE }}, ansible playbook app_release is {{ app_release }}, inventory var is {{ mealplanner_release }}, and app_release_matches is {{ app_release_matches }}
+
   - name: Create web application directory
     ansible.builtin.file:
       path: "{{ app_path }}"
@@ -23,13 +35,18 @@
 
   - name: Copy web application files
     ansible.builtin.copy:
-      src: /home/ubuntu/actions-runner/_work/MealPlannerApi/MealPlannerApi/publish/
+      src: "/opt/MealPlannerApi/releases/release-{{ mealplanner_release }}/"
       dest: "{{ app_path }}"
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
       mode: "0755"
       remote_src: false
-
+    when: not app_release_matches
+    changed_when: true
+    notify:
+      - restart mealplannerapi
+      - set app_release environment variable
+    
   - name: Ensure MealPlannerApi binary is executable
     ansible.builtin.file:
       path: "{{ app_path }}/MealPlannerApi"
@@ -80,5 +97,12 @@
     ansible.builtin.systemd:
       name: mealplannerapi
       state: restarted
+  
+  - name: set app_release environment variable
+    ansible.builtin.lineinfile:
+      path: /etc/environment
+      regexp: '^APP_RELEASE='
+      line: "APP_RELEASE={{ mealplanner_release }}"
+      create: yes
   
 
