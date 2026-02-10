@@ -7,9 +7,11 @@ inventory_dir="ansible/inventory"
 read -r -p "Specify the environment (prod, dev, both): " environment
 read -r -p "Specify the server role (lb, web, db, all): " role
 read -r -p "Specify the GitHub branch name: " branch
+read -r -p "Use Ansible --check flag? (y|n): " ansibleCheck
 
 echo "Your chosen environment is $environment"
 echo "Your chosen server role is $role"
+echo "Your chosen branch is $branch"
 read -r -p "Is this correct? (y/n): " user_confirm
 
 case "$user_confirm" in
@@ -21,7 +23,7 @@ case "$user_confirm" in
     exit 1
     ;;
   *)
-    echo "Incorrect input"
+    echo "Incorrect input, exiting..."
     exit 1
     ;;
 esac
@@ -44,5 +46,13 @@ if [ ! -f "$inventory_path" ]; then
   exit 1
 fi
 
-echo "Running playbook..."
-ansible-playbook -i "$inventory_path" "$playbook_path" --ask-vault-password --check
+if [ $ansibleCheck = "y" ]; then 
+  echo -r -p "Running Ansible playbook in check mode..."
+  ansible-playbook -i "$inventory_path" "$playbook_path" --ask-vault-password --check
+elif [ $ansibleCheck = "n" ]
+  echo -r -p "Running Ansible playbook..."
+  ansible-playbook -i "$inventory_path" "$playbook_path" --ask-vault-password
+else
+  echo "Invalid user input received. Not running playbook..."
+fi
+
