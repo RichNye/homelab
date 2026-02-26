@@ -33,21 +33,34 @@ frontend prometheus
 frontend mealplannerapi
     bind *:80
     bind *:443
-    use_backend api_servers if { path_beg /api/ }
-    default_backend web_servers
+
+    # Static assets (served by web server)
+    acl is_static path_end -i .html .css .js .png .jpg .jpeg .gif .ico .svg .woff .woff2 .txt
+    acl is_root path -i /
+
+    # if root URL is hit, set the path to index.html
+    http-request set-path /index.html if is_root
+
+    # use frontend mealplanner service if it's a file resource or the root URL.
+    use_backend web_servers if is_root
+    use_backend web_servers if is_static
+
+    # use api server for everything else, such as /api, /me, /login etc.
+    default_backend api_servers
 
 backend api_servers
     balance roundrobin
-    option httpchk GET /api/recipes
+
     default-server check maxconn 20
-    {% for host in groups.web_servers %}
-    server {{ host }} {{ host }}:8080
-    {% endfor %}
+        {% for host in groups.web_servers %}
+        server {{ host }} {{ host }}:8080
+        {% endfor %}
 
 backend web_servers
     balance roundrobin
-    option httpchk GET /swagger/index.html
+    option httpchk GET /index.html
+    
     default-server check maxconn 2000
-    {% for host in groups.web_servers %}
-    server {{ host }} {{ host }}:8080
-    {% endfor %}
+        {% for host in groups.web_servers %}
+        server {{ host }} {{ host }}:8080
+        {% endfor %}
