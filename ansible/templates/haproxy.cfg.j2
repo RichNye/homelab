@@ -62,5 +62,5 @@ backend web_servers
     
     default-server check maxconn 2000
     {% for host in groups.web_servers %}
-    server {{ host }} {{ host }}:8080
+    server {{ host }} {{ host }}:8090
     {% endfor %}
