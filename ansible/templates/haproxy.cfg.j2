@@ -52,15 +52,15 @@ backend api_servers
     balance roundrobin
 
     default-server check maxconn 20
-        {% for host in groups.web_servers %}
-        server {{ host }} {{ host }}:8080
-        {% endfor %}
+    {% for host in groups.web_servers %}
+    server {{ host }} {{ host }}:8080
+    {% endfor %}
 
 backend web_servers
     balance roundrobin
     option httpchk GET /index.html
     
     default-server check maxconn 2000
-        {% for host in groups.web_servers %}
-        server {{ host }} {{ host }}:8080
-        {% endfor %}
+    {% for host in groups.web_servers %}
+    server {{ host }} {{ host }}:8080
+    {% endfor %}
