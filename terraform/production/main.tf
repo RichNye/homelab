@@ -68,7 +68,7 @@ module "db_vm" {
   vm_tags              = "database,prod"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
-    ssh_public_key       = var.ssh_public_key
+  ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
   vm_disks = [
@@ -98,7 +98,7 @@ module "lb_vm" {
   vm_tags              = "loadbalancer,haproxy,prod"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-2404-cloudinit-template"
-    ssh_public_key       = var.ssh_public_key
+  ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
   vm_disks = [
