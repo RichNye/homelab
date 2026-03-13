@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mp-api-config
+  namespace: mealplanner
+data:
+  aspnetcore_environment: Development

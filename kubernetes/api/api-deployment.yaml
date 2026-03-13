@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mp-api-deployment
+  namespace: mealplanner
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mealplanner-api
+  template:
+    metadata:
+      labels:
+        app: mealplanner-api
+    spec:
+      containers:
+      - name: mealplanner-api
+        image: richn987/mealplannerapi:master
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: mp-api-config
+              key: aspnetcore_environment
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: mp-api-secret
+              key: connectionstrings__defaultconnection
+          

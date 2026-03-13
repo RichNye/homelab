@@ -11,3 +11,5 @@
 
 # OS / tooling artefacts
 *.exe
+
+secrets.yaml

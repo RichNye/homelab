@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: mealplanner
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mealplanner-frontend
+  template:
+    metadata:
+      labels:
+        app: mealplanner-frontend
+    spec:
+      containers:
+      - name: mealplanner-web
+        image: richn987/mealplannerfrontend:main
+        ports:
+        - containerPort: 8090
