@@ -20,7 +20,7 @@ proxmox_check=true
 for parameter in "$@"
 do
   case "$parameter" in
-    --no-proxmox-check)
+    --skip-proxmox-check)
       proxmox_check=false
     ;;
 
@@ -30,7 +30,6 @@ do
     ;;
   esac
 done
-
 
 #######################
 # function declaration
@@ -93,7 +92,6 @@ if [[ "$proxmox_check" = true ]]; then
   check_proxmox_connection
 fi
 
-
 # install Terraform and prereqs
 echo "installing terraform..."
 if dpkg -s terraform &> /dev/null; then
@@ -120,3 +118,5 @@ if ! dpkg -s git &> /dev/null; then
 else 
   git clone $homelab_repo_url
 fi
+
+
