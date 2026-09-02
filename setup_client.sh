@@ -11,6 +11,7 @@
 homelab_repo_url="https://github.com/RichNye/homelab.git"
 proxmox_host="192.168.178.50"
 proxmox_check=true
+clone_repo=true
 
 
 #######################
@@ -22,6 +23,10 @@ do
   case "$parameter" in
     --skip-proxmox-check)
       proxmox_check=false
+    ;;
+
+    --skip-repo-clone)
+      clone_repo=false
     ;;
 
     *)
@@ -110,13 +115,15 @@ else
   install_ansible
 fi
 
-# clone github repo
-echo "cloning homelab repo..."
+# check for git and clone git repo if not skipped
 if ! dpkg -s git &> /dev/null; then
   echo "git not installed - installing..."
   sudo apt install -y git
 else 
-  git clone $homelab_repo_url
+  if [[ "$clone_repo" = true ]]; then
+    echo "cloning homelab repo..."
+    git clone $homelab_repo_url
+  fi
 fi
 
 
