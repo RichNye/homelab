@@ -8,8 +8,28 @@
 # Variable declaration
 #######################
 
-HOMELAB_REPO_URL="https://github.com/RichNye/homelab.git"
-PROXMOX_HOST="192.168.178.50"
+homelab_repo_url="https://github.com/RichNye/homelab.git"
+proxmox_host="192.168.178.50"
+proxmox_check=true
+
+
+#######################
+# process the supplied parameters
+#######################
+
+for parameter in "$@"
+do
+  case "$parameter" in
+    --no-proxmox-check)
+      proxmox_check=false
+    ;;
+
+    *)
+      echo "Unknown option: $parameter"
+      exit 1
+    ;;
+  esac
+done
 
 
 #######################
@@ -28,7 +48,7 @@ function check_proxmox_connection() {
 
   echo "testing connection to Proxmox host..."
   proxmox_response=$(curl -H "Authorization: PVEAPIToken=$PM_API_TOKEN_ID=$PM_API_TOKEN_SECRET" \
-      https://$PROXMOX_HOST:8006/api2/json/version --insecure -i -s) 
+      https://$proxmox_host:8006/api2/json/version --insecure -i -s) 
 
   if [[ $proxmox_response != *"200 OK"* ]]; then
       echo "Proxmox API error - curl output in full:"
@@ -69,7 +89,10 @@ function install_ansible() {
 #####################
 
 # check Proxmox connection via environment variables
-check_proxmox_connection
+if [[ "$proxmox_check" = true ]]; then
+  check_proxmox_connection
+fi
+
 
 # install Terraform and prereqs
 echo "installing terraform..."
@@ -95,5 +118,5 @@ if ! dpkg -s git &> /dev/null; then
   echo "git not installed - installing..."
   sudo apt install -y git
 else 
-  git clone $HOMELAB_REPO_URL
+  git clone $homelab_repo_url
 fi
