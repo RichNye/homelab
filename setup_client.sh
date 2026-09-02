@@ -87,7 +87,6 @@ function install_ansible() {
   sudo apt install -y ansible
 }
 
-
 #####################
 # Main script
 #####################
@@ -119,11 +118,11 @@ fi
 if ! dpkg -s git &> /dev/null; then
   echo "git not installed - installing..."
   sudo apt install -y git
-else 
-  if [[ "$clone_repo" = true ]]; then
-    echo "cloning homelab repo..."
-    git clone $homelab_repo_url
-  fi
+fi
+
+if [[ "$clone_repo" = true ]]; then
+  echo "cloning homelab repo..."
+  git clone "$homelab_repo_url"
 fi
 
 
