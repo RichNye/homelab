@@ -54,7 +54,7 @@ function check_proxmox_connection() {
   proxmox_response=$(curl -H "Authorization: PVEAPIToken=$PM_API_TOKEN_ID=$PM_API_TOKEN_SECRET" \
       https://$proxmox_host:8006/api2/json/version --insecure -i -s) 
 
-  if [[ $proxmox_response != *"200 OK"* ]]; then
+  if [[ "$proxmox_response" != *"200 OK"* ]]; then
       echo "Proxmox API error - curl output in full:"
       echo "$proxmox_response"
       exit 1
