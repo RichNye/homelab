@@ -93,7 +93,7 @@ function create_selfhosted_runner() {
   sudo useradd -m -s /bin/bash "$runner_user"
   sudo passwd "$runner_user"
 
-  mkdir "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
+  sudo mkdir "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
 
   echo "switching to "$runner_user""
   sudo su - "$runner_user"
