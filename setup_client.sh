@@ -95,9 +95,6 @@ function create_selfhosted_runner() {
 
   sudo mkdir "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
 
-  echo "switching to "$runner_user""
-  sudo su - "$runner_user"
-
   cd "$runner_dir"
 
   echo "downloading runner package"
@@ -107,8 +104,8 @@ function create_selfhosted_runner() {
   tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz
   
   read -p "please enter the runner token: " runner_token
-  ./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token "$runner_token"
-  ./run.sh  
+  sudo -u $runner_user -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token "$runner_token""
+  sudo -u $runner_user -c "./run.sh"  
 }
 
 #####################
