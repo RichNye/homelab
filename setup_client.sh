@@ -98,8 +98,8 @@ function create_selfhosted_runner() {
   cd "$runner_dir"
   pwd
   echo "downloading runner package"
-  sudo -u $runner_user "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
-  sudo -u $runner_user "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u $runner_user bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u $runner_user bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
   
   read -p "please enter the runner token: " runner_token
   sudo -u $runner_user "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token "$runner_token""
