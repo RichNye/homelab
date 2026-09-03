@@ -13,7 +13,6 @@ proxmox_host="192.168.178.50"
 proxmox_check=true
 clone_repo=true
 
-
 #######################
 # process the supplied parameters
 #######################
@@ -87,6 +86,31 @@ function install_ansible() {
   sudo apt install -y ansible
 }
 
+function create_selfhosted_runner() {
+  local runner_user="selfhosted-runner"
+  local runner_dir="/opt/actions-runner"
+
+  sudo useradd -m -s /bin/bash "$runner_user"
+  sudo passwd "$runner_user"
+
+  mkdir "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
+
+  echo "switching to "$runner_user""
+  sudo su - "$runner_user"
+
+  cd "$runner_dir"
+
+  echo "downloading runner package"
+  curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz
+  # validate hash
+  echo "70920811a4f8ad4328818682bca5c6469c1c942fab52448868071d0063816613  actions-runner-linux-x64-2.337.0.tar.gz" | shasum -a 256 -c
+  tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz
+  
+  read -p "please enter the runner token: " runner_token
+  ./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token "$runner_token"
+  ./run.sh  
+}
+
 #####################
 # Main script
 #####################
@@ -103,7 +127,7 @@ if dpkg -s terraform &> /dev/null; then
 else
   echo "terraform not installed - installing..."
   install_terraform
-fi  
+fi
 
 # install Ansible and prereqs
 echo "installing ansible..."
@@ -125,4 +149,5 @@ if [[ "$clone_repo" = true ]]; then
   git clone "$homelab_repo_url"
 fi
 
-
+# configure self-hosted runner (currently GitHub but may be GitLab in future)
+create_selfhosted_runner
