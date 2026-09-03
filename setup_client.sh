@@ -103,7 +103,7 @@ function create_selfhosted_runner() {
   
   read -p "please enter the runner token: " runner_token
   sudo -u $runner_user bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token "$runner_token""
-  sudo -u $runner_user bash -c "./run.sh"  
+  sudo "$runner_dir"/actions-runner/svc.sh install $runner_user
 }
 
 #####################
