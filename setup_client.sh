@@ -53,7 +53,7 @@ function check_proxmox_connection() {
 
   echo "testing connection to Proxmox host..."
   proxmox_response=$(curl -H "Authorization: PVEAPIToken=$PM_API_TOKEN_ID=$PM_API_TOKEN_SECRET" \
-      https://$proxmox_host:8006/api2/json/version --insecure -i -s) 
+      https://"$proxmox_host":8006/api2/json/version --insecure -i -s) 
 
   if [[ "$proxmox_response" != *"200 OK"* ]]; then
       echo "Proxmox API error - curl output in full:"
@@ -99,7 +99,7 @@ function install_ansible() {
 }
 
 function create_runner_user() {
-  if grep -c "^${"$runner_user"}:" /etc/passwd; then
+  if id "$runner_user" &>/dev/null; then
     echo "user already exists"
   else
     echo "creating self-hosted runner user..."
@@ -112,17 +112,17 @@ function create_runner_user() {
 function create_selfhosted_runner() {
   local runner_dir="/opt/actions-runner"
 
-  sudo mkdir "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
+  sudo mkdir -p "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
 
   cd "$runner_dir"
   pwd
   echo "downloading runner package"
-  sudo -u $runner_user bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
-  sudo -u $runner_user bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u "$runner_user" bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u "$runner_user" bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
   
   read -p "please enter the runner token: " runner_token
-  sudo -u $runner_user bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token "$runner_token""
-  sudo "$runner_dir"/svc.sh install $runner_user
+  sudo -u "$runner_user" bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token $runner_token"
+  sudo "$runner_dir"/svc.sh install "$runner_user"
 }
 
 #####################
@@ -135,11 +135,9 @@ if [[ "$proxmox_check" = true ]]; then
 fi
 
 # install Terraform and prereqs
-echo "installing terraform..."
 install_terraform
 
 # install Ansible and prereqs
-echo "installing ansible..."
 install_ansible
 
 # check for git and clone git repo if not skipped
