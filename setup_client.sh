@@ -13,6 +13,8 @@ proxmox_host="192.168.178.50"
 proxmox_check=true
 clone_repo=true
 
+runner_user="selfhosted-runner"
+
 #######################
 # process the supplied parameters
 #######################
@@ -86,12 +88,19 @@ function install_ansible() {
   sudo apt install -y ansible
 }
 
-function create_selfhosted_runner() {
-  local runner_user="selfhosted-runner"
-  local runner_dir="/opt/actions-runner"
+function create_runner_user() {
+  if grep -c "^${"$runner_user"}:" /etc/passwd; then
+    echo "user already exists"
+  else
+    echo "creating self-hosted runner user..."
+    sudo useradd -m -s /bin/bash "$runner_user"
+    echo "enter new user password: "
+    sudo passwd "$runner_user"
+  fi
+}
 
-  sudo useradd -m -s /bin/bash "$runner_user"
-  sudo passwd "$runner_user"
+function create_selfhosted_runner() {
+  local runner_dir="/opt/actions-runner"
 
   sudo mkdir "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
 
@@ -145,4 +154,6 @@ if [[ "$clone_repo" = true ]]; then
 fi
 
 # configure self-hosted runner (currently GitHub but may be GitLab in future)
+create_runner_user
 create_selfhosted_runner
+
