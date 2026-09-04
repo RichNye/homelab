@@ -66,26 +66,36 @@ function check_proxmox_connection() {
 
 # source: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
 function install_terraform() {
-  # install prereqs
-  sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
+  if dpkg -s terraform &> /dev/null; then
+    echo "terraform installed - skipping install"
+  else
+    echo "terraform not installed - installing..."
+    # install prereqs
+    sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
 
-  # install Hashicorp GPG key
-  wget -O- https://apt.releases.hashicorp.com/gpg | \
-  gpg --dearmor | \
-  sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
+    # install Hashicorp GPG key
+    wget -O- https://apt.releases.hashicorp.com/gpg | \
+    gpg --dearmor | \
+    sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null
 
-  # add Hashicorp repo
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+    # add Hashicorp repo
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
 
-  # install Terraform
-  sudo apt update && sudo apt install -y terraform
+    # install Terraform
+    sudo apt update && sudo apt install -y terraform
+  fi  
 }
 
 function install_ansible() {
-  sudo apt update
-  sudo apt install -y software-properties-common
-  sudo add-apt-repository --yes --update ppa:ansible/ansible
-  sudo apt install -y ansible
+  if dpkg -s ansible &> /dev/null; then
+    echo "ansible installed - skipping install"
+  else 
+    echo "ansible not installed - installing..."
+    sudo apt update
+    sudo apt install -y software-properties-common
+    sudo add-apt-repository --yes --update ppa:ansible/ansible
+    sudo apt install -y ansible    
+  fi
 }
 
 function create_runner_user() {
@@ -126,28 +136,17 @@ fi
 
 # install Terraform and prereqs
 echo "installing terraform..."
-if dpkg -s terraform &> /dev/null; then
-  echo "terraform installed - skipping install"
-else
-  echo "terraform not installed - installing..."
-  install_terraform
-fi
+install_terraform
 
 # install Ansible and prereqs
 echo "installing ansible..."
-if dpkg -s ansible &> /dev/null; then
-  echo "ansible installed - skipping install"
-else 
-  echo "ansible not installed - installing..."
-  install_ansible
-fi
+install_ansible
 
 # check for git and clone git repo if not skipped
 if ! dpkg -s git &> /dev/null; then
   echo "git not installed - installing..."
   sudo apt install -y git
 fi
-
 if [[ "$clone_repo" = true ]]; then
   echo "cloning homelab repo..."
   git clone "$homelab_repo_url"
