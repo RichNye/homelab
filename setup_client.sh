@@ -9,7 +9,6 @@
 #######################
 
 homelab_repo_url="https://github.com/RichNye/homelab.git"
-proxmox_host="192.168.178.50"
 proxmox_check=true
 clone_repo=true
 
@@ -52,8 +51,8 @@ function check_proxmox_connection() {
   fi
 
   echo "testing connection to Proxmox host..."
-  proxmox_response=$(curl -H "Authorization: PVEAPIToken=$PM_API_TOKEN_ID=$PM_API_TOKEN_SECRET" \
-      https://"$proxmox_host":8006/api2/json/version --insecure -i -s) 
+  proxmox_response=$(curl -H "Authorization: PVEAPIToken="${PM_API_TOKEN_ID}"="${PM_API_TOKEN_SECRET}"" \
+      https://"${PM_HOSTNAME}":8006/api2/json/version --insecure -i -s) 
 
   if [[ "$proxmox_response" != *"200 OK"* ]]; then
       echo "Proxmox API error - curl output in full:"
