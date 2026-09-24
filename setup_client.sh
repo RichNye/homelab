@@ -1,26 +1,36 @@
 #!/usr/bin/env bash
+
+#################################
+# DESCRIPTION
+#################################
+
+# This script runs interactively as part of homelab setup.
+# Configures a Linux host as a homelab control node.
+# The control node is expected to run Terraform and Ansible code that configures MealPlanner infrastructure and website.
+# It will also function as a GitHub Actions self-hosted runner for CI/CD.
+
 # high-level steps:
 # check proxmox API env variables exist, connect to proxmox as test
-# install terraform, initialise, output a tf plan
-# run tf apply if prompted
+# install terraform, ansible, git, and clone the homelab repo
 
 # Prereqs before running:
 # 1. environment vars: PM_API_TOKEN_ID and PM_API_TOKEN_SECRET (from Proxmox)
 # 2. PM_HOSTNAME (either resolvable DNS name or Proxmox host IP
-# 3. 
+# 3. be in a position to create a new self-hosted runner in the GUI.
 
-# typically catch errors with conditionals but this is a safety net
-set -euo pipefail
+# typically catch errors with conditionals but this is a safety net. 
+# empty variables shouldn't cause failure here - the script will handle them or the commands will fail with an exit code.
+set -eo pipefail
 
 #######################
 # Variable declaration
 #######################
 
-homelab_repo_url="https://github.com/RichNye/homelab.git"
 proxmox_check=true
 clone_repo=true
 
-runner_user="selfhosted-runner"
+readonly homelab_repo_url="https://github.com/RichNye/homelab.git"
+readonly runner_user="selfhosted-runner"
 
 #######################
 # process the supplied parameters
@@ -57,11 +67,17 @@ function check_proxmox_connection() {
     echo "Proxmox API token name not found, please set!"
     exit 1
   fi
+  if [ ! "${PM_HOSTNAME}" ]; then
+    echo "Proxmox hostname not found, please set!"
+    exit 1
+  fi
 
   echo "testing connection to Proxmox host..."
+  # insecure flag used because the homelab doesn't have a cert configured for proxmox.
   proxmox_response=$(curl -H "Authorization: PVEAPIToken=${PM_API_TOKEN_ID}=${PM_API_TOKEN_SECRET}" \
   "https://${PM_HOSTNAME}:8006/api2/json/version" --insecure -i -s)
 
+  # need to revisit this and try to look at the response code in a better way
   if [[ "${proxmox_response}" != *"200 OK"* ]]; then
       echo "Proxmox API error - curl output in full:"
       echo "${proxmox_response}"
@@ -110,7 +126,8 @@ function create_runner_user() {
     echo "user already exists"
   else
     echo "creating self-hosted runner user..."
-    sudo useradd -m -s /bin/bash "{$runner_user}"
+    sudo useradd -m -s /bin/bash "${runner_user}"
+    # prompt for the password until a more secure and automated way of capturing it is scripted
     echo "enter new user password: "
     sudo passwd "${runner_user}"
   fi
@@ -127,9 +144,14 @@ function create_selfhosted_runner() {
   sudo -u "${runner_user}" bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
   sudo -u "${runner_user}" bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
   
+  # prompt for the runner token because runner setup is GUI-driven currently. Simple copy and paste of the token works here.
   read -p "please enter the runner token: " runner_token
   sudo -u "${runner_user}" bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token ${runner_token}"
   sudo "${runner_dir}"/svc.sh install "${runner_user}"
+}
+
+function run_terraform_plan() {
+
 }
 
 #####################
@@ -154,7 +176,7 @@ if ! dpkg -s git &> /dev/null; then
 fi
 if [[ "${clone_repo}" = true ]]; then
   echo "cloning homelab repo..."
-  git clone "${homelab_repo_url} "
+  git clone "${homelab_repo_url}"
 fi
 
 # configure self-hosted runner (currently GitHub but may be GitLab in future)
