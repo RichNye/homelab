@@ -1,8 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # high-level steps:
 # check proxmox API env variables exist, connect to proxmox as test
 # install terraform, initialise, output a tf plan
 # run tf apply if prompted
+
+# Prereqs before running:
+# 1. environment vars: PM_API_TOKEN_ID and PM_API_TOKEN_SECRET (from Proxmox)
+# 2. PM_HOSTNAME (either resolvable DNS name or Proxmox host IP
+# 3. 
+
+# typically catch errors with conditionals but this is a safety net
+set -euo pipefail
 
 #######################
 # Variable declaration
@@ -20,7 +28,7 @@ runner_user="selfhosted-runner"
 
 for parameter in "$@"
 do
-  case "$parameter" in
+  case "${parameter}" in
     --skip-proxmox-check)
       proxmox_check=false
     ;;
@@ -30,7 +38,7 @@ do
     ;;
 
     *)
-      echo "Unknown option: $parameter"
+      echo "Unknown option: "${parameter}""
       exit 1
     ;;
   esac
@@ -41,22 +49,22 @@ done
 #######################
 function check_proxmox_connection() {
   # check environment variables exist
-  if [ ! "$PM_API_TOKEN_SECRET" ]; then
+  if [ ! "${PM_API_TOKEN_SECRET}" ]; then
     echo "Proxmox API secret not found, please set!"
     exit 1
   fi
-  if [ ! "$PM_API_TOKEN_ID" ]; then
+  if [ ! "${PM_API_TOKEN_ID}" ]; then
     echo "Proxmox API token name not found, please set!"
     exit 1
   fi
 
   echo "testing connection to Proxmox host..."
-  proxmox_response=$(curl -H "Authorization: PVEAPIToken="${PM_API_TOKEN_ID}"="${PM_API_TOKEN_SECRET}"" \
-      https://"${PM_HOSTNAME}":8006/api2/json/version --insecure -i -s) 
+  proxmox_response=$(curl -H "Authorization: PVEAPIToken=${PM_API_TOKEN_ID}=${PM_API_TOKEN_SECRET}" \
+  "https://${PM_HOSTNAME}:8006/api2/json/version" --insecure -i -s)
 
-  if [[ "$proxmox_response" != *"200 OK"* ]]; then
+  if [[ "${proxmox_response}" != *"200 OK"* ]]; then
       echo "Proxmox API error - curl output in full:"
-      echo "$proxmox_response"
+      echo "${proxmox_response}"
       exit 1
   else
       echo "Proxmox host tested successfully!"
@@ -98,30 +106,30 @@ function install_ansible() {
 }
 
 function create_runner_user() {
-  if id "$runner_user" &>/dev/null; then
+  if id "${runner_user}" &>/dev/null; then
     echo "user already exists"
   else
     echo "creating self-hosted runner user..."
-    sudo useradd -m -s /bin/bash "$runner_user"
+    sudo useradd -m -s /bin/bash "{$runner_user}"
     echo "enter new user password: "
-    sudo passwd "$runner_user"
+    sudo passwd "${runner_user}"
   fi
 }
 
 function create_selfhosted_runner() {
   local runner_dir="/opt/actions-runner"
 
-  sudo mkdir -p "$runner_dir"; sudo chown "$runner_user" "$runner_dir"
+  sudo mkdir -p "${runner_dir}"; sudo chown "${runner_user}" "${runner_dir}"
 
-  cd "$runner_dir"
+  cd "${runner_dir}"
   pwd
   echo "downloading runner package"
-  sudo -u "$runner_user" bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
-  sudo -u "$runner_user" bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u "${runner_user}" bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u "${runner_user}" bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
   
   read -p "please enter the runner token: " runner_token
-  sudo -u "$runner_user" bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token $runner_token"
-  sudo "$runner_dir"/svc.sh install "$runner_user"
+  sudo -u "${runner_user}" bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token ${runner_token}"
+  sudo "${runner_dir}"/svc.sh install "${runner_user}"
 }
 
 #####################
@@ -129,7 +137,7 @@ function create_selfhosted_runner() {
 #####################
 
 # check Proxmox connection via environment variables
-if [[ "$proxmox_check" = true ]]; then
+if [[ "${proxmox_check}" = true ]]; then
   check_proxmox_connection
 fi
 
@@ -144,9 +152,9 @@ if ! dpkg -s git &> /dev/null; then
   echo "git not installed - installing..."
   sudo apt install -y git
 fi
-if [[ "$clone_repo" = true ]]; then
+if [[ "${clone_repo}" = true ]]; then
   echo "cloning homelab repo..."
-  git clone "$homelab_repo_url"
+  git clone "${homelab_repo_url} "
 fi
 
 # configure self-hosted runner (currently GitHub but may be GitLab in future)
