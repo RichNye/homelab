@@ -9,7 +9,7 @@
 terraformApply=false
 terraformPlan=false
 terraformRefresh=false
-environment="prod"
+environment="production"
 
 ############
 # process script parameters
@@ -71,9 +71,9 @@ function get_remote_state_access_key() {
 }
 
 function set_working_directory() {
-    if [ -d "$HOME/homelab/$environment" ]; then
+    if [ -d "$HOME/homelab/terraform/$environment" ]; then
         echo "setting directory to $environment tf folder..."
-        cd $HOME/homelab/$environment
+        cd $HOME/homelab/terraform/$environment
     else
         echo "folder for environment $environment doesn't exist. Exiting..."
         exit 1
