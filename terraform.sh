@@ -9,6 +9,7 @@
 terraformApply=false
 terraformPlan=false
 terraformRefresh=false
+environment="prod"
 
 ############
 # process script parameters
@@ -27,6 +28,10 @@ do
 
     refresh)
       terraformRefresh=true
+    ;;
+
+    --environment)
+      environment=$parameter
     ;;
 
     *)
@@ -65,6 +70,16 @@ function get_remote_state_access_key() {
     export "${accessSecretLine}"
 }
 
+function set_working_directory() {
+    if [ -d "$HOME/homelab/$environment" ]; then
+        echo "setting directory to $environment tf folder..."
+        cd $HOME/homelab/$environment
+    else
+        echo "folder for environment $environment doesn't exist. Exiting..."
+        exit 1
+    fi
+}
+
 function terraform_plan () {
     if [ "${terraformPlan}" = true ]; then
         terraform plan
@@ -76,9 +91,7 @@ function terraform_apply() {
     if [ "${terraformApply}" = true ]; then
         terraform apply
         exit 0
-    fi
-
-    
+    fi   
 }
 
 function terraform_refresh() {
@@ -94,7 +107,7 @@ function terraform_refresh() {
 ####################
 echo "running script..."
 get_remote_state_access_key
-echo $AWS_ACCESS_KEY_ID
-#terraform_plan
-#terraform_apply
-#terraform_refresh
+set_working_directory
+terraform_plan
+terraform_apply
+terraform_refresh
