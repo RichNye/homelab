@@ -166,6 +166,21 @@ function create_ssh_keys() {
   fi  
 }
 
+function clone_git_repos() {
+  local repos=("https://github.com/RichNye/homelab.git" "https://github.com/RichNye/MealPlannerApi.git" "https://github.com/RichNye/MealPlannerFrontend")
+
+  for repo in ${repos[@]}; do
+    local repoName=$(echo "$repo" | awk -F'/' '{print $NF}' | awk -F'.' '{print $1}')
+    if [ ! -d "$HOME/$repoName" ]; then
+      echo "cloning $repoName..."
+      mkdir -p "$HOME/$repoName" # have to make the directory first to avoid 'is not an empty directory' error when cloning
+      git clone "$repo" "$HOME/$repoName"
+    else
+      echo "$repoName already cloned. Delete folder if you wish to clone again."
+    fi
+  done
+}
+
 #####################
 # Main script
 #####################
@@ -187,12 +202,12 @@ if ! dpkg -s git &> /dev/null; then
   sudo apt install -y git
 fi
 if [[ "${clone_repo}" = true ]]; then
-  echo "cloning homelab repo..."
-  git clone "${homelab_repo_url}"
+  echo "cloning repos..."
+  clone_git_repos
 fi
 
 # configure self-hosted runner (currently GitHub but may be GitLab in future)
 #create_runner_user
 #create_selfhosted_runner
-create_ssh_keys
+#create_ssh_keys
 
