@@ -166,6 +166,19 @@ function create_ssh_keys() {
   fi  
 }
 
+function create_tfvars_file() {
+  local cloudinit_public_key=$(cat "$HOME/.ssh/homelab/cloudinit.pub")
+  local tfvars_path="/home/richard/homelab/terraform/production/prod.auto.tfvars"
+  
+  read -s -p "please enter the cloudinit user password: " cloudinit_password
+
+  cat <<-EOF > "$tfvars_path"
+  ssh_public_key     = "$cloudinit_public_key"
+  cloudinit_username = "ubuntu"
+  cloudinit_password = "$cloudinit_password"
+	EOF
+}
+
 function clone_git_repos() {
   local repos=("https://github.com/RichNye/homelab.git" "https://github.com/RichNye/MealPlannerApi.git" "https://github.com/RichNye/MealPlannerFrontend")
 
@@ -210,4 +223,5 @@ fi
 create_runner_user
 create_selfhosted_runner
 create_ssh_keys
+create_tfvars_file
 
