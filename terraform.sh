@@ -124,6 +124,7 @@ function terraform_plan () {
 
 function terraform_apply() {
     if [ "${terraformApply}" = true ]; then
+        get_proxmox_api_key
         terraform apply
         exit 0
     fi
