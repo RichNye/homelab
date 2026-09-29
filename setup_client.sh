@@ -207,7 +207,7 @@ if [[ "${clone_repo}" = true ]]; then
 fi
 
 # configure self-hosted runner (currently GitHub but may be GitLab in future)
-#create_runner_user
-#create_selfhosted_runner
-#create_ssh_keys
+create_runner_user
+create_selfhosted_runner
+create_ssh_keys
 
