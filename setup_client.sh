@@ -160,7 +160,7 @@ function create_ssh_keys() {
 
   # create the key if it doesn't exist
   if [[ ! -f "${sshKeyPath}/${sshKeyFile}" ]]; then
-    ssh-keygen -t ed25519 -C "homelab-cloudinit-key" -f "${sshKeyPath}/${sshKeyFile}" -N ""
+    ssh-keygen -t ed25519 -f "${sshKeyPath}/${sshKeyFile}" -N ""
   else
     echo "key file already exists!"
   fi  
@@ -173,9 +173,9 @@ function create_tfvars_file() {
   read -s -p "please enter the cloudinit user password: " cloudinit_password
 
   cat <<-EOF > "$tfvars_path"
-  ssh_public_key     = "$cloudinit_public_key"
-  cloudinit_username = "ubuntu"
-  cloudinit_password = "$cloudinit_password"
+ssh_public_key     = "$cloudinit_public_key"
+cloudinit_username = "ubuntu"
+cloudinit_password = "$cloudinit_password"
 	EOF
 }
 
