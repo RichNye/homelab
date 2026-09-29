@@ -70,6 +70,34 @@ function get_remote_state_access_key() {
     export "${accessSecretLine}"
 }
 
+function get_proxmox_api_key() {
+    # tweaked from source jfmaes.me/blog/stop-committing-your-secrets-you-know-who-you-are/
+    local file="$HOME/homelab/.enc.env"
+    local pm_api_key_id="PM_API_TOKEN_ID"
+    local pm_api_key="PM_API_TOKEN_SECRET"
+
+    [ ! -f "${file}" ] && echo "File not found: ${file}" && return 1
+
+    local decrypted
+    decrypted="$(sops -d "${file}")" || { echo "Failed to decrypt ${file}"; exit 1; }
+    local pm_key_id_line pm_api_value_line
+    pm_key_id_line="$(awk -F= -v k="${pm_api_key_id}" '$1==k' <<< "${decrypted}")"
+    pm_api_value_line="$(awk -F= -v k="${pm_api_key}" '$1==k' <<< "${decrypted}")"
+
+    if [ -z "${pm_key_id_line}" ]; then
+        echo "Access key not found in ${file}, exiting..."
+        exit 1
+    fi
+
+    if [ -z "${pm_api_value_line}" ]; then
+        echo "Access secret not found in ${file}, exiting..."
+        exit 1
+    fi
+
+    export "$pm_key_id_line"
+    export "$pm_api_value_line"
+}
+
 function set_working_directory() {
     if [ -d "$HOME/homelab/terraform/$environment" ]; then
         echo "setting directory to $environment tf folder..."
@@ -88,7 +116,7 @@ function terraform_init () {
 
 function terraform_plan () {
     if [ "${terraformPlan}" =  true ]; then
-        echo "hello from plan"
+        get_proxmox_api_key
         terraform plan
         exit 0
     fi
