@@ -150,8 +150,20 @@ function create_selfhosted_runner() {
   sudo "${runner_dir}"/svc.sh install "${runner_user}"
 }
 
-function run_terraform_plan() {
+function create_ssh_keys() {
+  local sshKeyPath="$HOME/.ssh/homelab"
+  local sshKeyFile="cloudinit"
 
+  if [[ ! -d "$sshKeyPath" ]]; then
+    mkdir -p "$sshKeyPath"
+  fi
+
+  # create the key if it doesn't exist
+  if [[ ! -f "${sshKeyPath}/${sshKeyFile}" ]]; then
+    ssh-keygen -t ed25519 -C "homelab-cloudinit-key" -f "${sshKeyPath}/${sshKeyFile}" -N ""
+  else
+    echo "key file already exists!"
+  fi  
 }
 
 #####################
@@ -180,6 +192,7 @@ if [[ "${clone_repo}" = true ]]; then
 fi
 
 # configure self-hosted runner (currently GitHub but may be GitLab in future)
-create_runner_user
-create_selfhosted_runner
+#create_runner_user
+#create_selfhosted_runner
+create_ssh_keys
 
