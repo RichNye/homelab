@@ -19,8 +19,7 @@
 # 3. be in a position to create a new self-hosted runner in the GUI.
 
 # typically catch errors with conditionals but this is a safety net. 
-# empty variables shouldn't cause failure here - the script will handle them or the commands will fail with an exit code.
-set -eo pipefail
+set -euo pipefail
 
 #######################
 # Variable declaration
@@ -38,7 +37,7 @@ readonly runner_user="selfhosted-runner"
 
 for parameter in "$@"
 do
-  case "${parameter}" in
+  case "$parameter" in
     --skip-proxmox-check)
       proxmox_check=false
     ;;
@@ -48,7 +47,7 @@ do
     ;;
 
     *)
-      echo "Unknown option: "${parameter}""
+      echo "Unknown option: $parameter"
       exit 1
     ;;
   esac
@@ -59,15 +58,15 @@ done
 #######################
 function check_proxmox_connection() {
   # check environment variables exist
-  if [ ! "${PM_API_TOKEN_SECRET}" ]; then
+  if [[ ! "$PM_API_TOKEN_SECRET" ]]; then
     echo "Proxmox API secret not found, please set!"
     exit 1
   fi
-  if [ ! "${PM_API_TOKEN_ID}" ]; then
+  if [[ ! "$PM_API_TOKEN_ID" ]]; then
     echo "Proxmox API token name not found, please set!"
     exit 1
   fi
-  if [ ! "${PM_HOSTNAME}" ]; then
+  if [[ ! "$PM_HOSTNAME" ]]; then
     echo "Proxmox hostname not found, please set!"
     exit 1
   fi
@@ -78,9 +77,9 @@ function check_proxmox_connection() {
   "https://${PM_HOSTNAME}:8006/api2/json/version" --insecure -i -s)
 
   # need to revisit this and try to look at the response code in a better way
-  if [[ "${proxmox_response}" != *"200 OK"* ]]; then
+  if [[ "$proxmox_response" != *"200 OK"* ]]; then
       echo "Proxmox API error - curl output in full:"
-      echo "${proxmox_response}"
+      echo "$proxmox_response"
       exit 1
   else
       echo "Proxmox host tested successfully!"
@@ -122,53 +121,55 @@ function install_ansible() {
 }
 
 function create_runner_user() {
-  if id "${runner_user}" &>/dev/null; then
+  if id "$runner_user" &>/dev/null; then
     echo "user already exists"
   else
     echo "creating self-hosted runner user..."
-    sudo useradd -m -s /bin/bash "${runner_user}"
+    sudo useradd -m -s /bin/bash "$runner_user"
     # prompt for the password until a more secure and automated way of capturing it is scripted
     echo "enter new user password: "
-    sudo passwd "${runner_user}"
+    sudo passwd "$runner_user"
   fi
 }
 
 function create_selfhosted_runner() {
   local runner_dir="/opt/actions-runner"
 
-  sudo mkdir -p "${runner_dir}"; sudo chown "${runner_user}" "${runner_dir}"
+  sudo mkdir -p "$runner_dir"; sudo chown "${runner_user}" "${runner_dir}"
 
-  cd "${runner_dir}"
+  cd "$runner_dir"
   pwd
   echo "downloading runner package"
-  sudo -u "${runner_user}" bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
-  sudo -u "${runner_user}" bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u "$runner_user" bash -c "curl -o actions-runner-linux-x64-2.337.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.337.0/actions-runner-linux-x64-2.337.0.tar.gz"
+  sudo -u "$runner_user" bash -c "tar xzf ./actions-runner-linux-x64-2.337.0.tar.gz"
   
   # prompt for the runner token because runner setup is GUI-driven currently. Simple copy and paste of the token works here.
   read -p "please enter the runner token: " runner_token
-  sudo -u "${runner_user}" bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token ${runner_token}"
-  sudo "${runner_dir}"/svc.sh install "${runner_user}"
+  sudo -u "$runner_user" bash -c "./config.sh --url https://github.com/RichNye/MealPlannerFrontend --token ${runner_token}"
+  sudo "$runner_dir"/svc.sh install "$runner_user"
 }
 
 function create_ssh_keys() {
-  local sshKeyPath="$HOME/.ssh/homelab"
-  local sshKeyFile="cloudinit"
+  local ssh_key_path="$HOME/.ssh/homelab"
+  local ssh_key_file="cloudinit"
 
-  if [[ ! -d "$sshKeyPath" ]]; then
-    mkdir -p "$sshKeyPath"
+  if [[ ! -d "$ssh_key_path" ]]; then
+    mkdir -p "$ssh_key_path"
   fi
 
   # create the key if it doesn't exist
-  if [[ ! -f "${sshKeyPath}/${sshKeyFile}" ]]; then
-    ssh-keygen -t ed25519 -f "${sshKeyPath}/${sshKeyFile}" -N ""
+  if [[ ! -f "${ssh_key_path}/${ssh_key_file}" ]]; then
+    ssh-keygen -t ed25519 -f "${ssh_key_path}/${ssh_key_file}" -N ""
   else
     echo "key file already exists!"
   fi  
 }
 
 function create_tfvars_file() {
-  local cloudinit_public_key=$(cat "$HOME/.ssh/homelab/cloudinit.pub")
+  local cloudinit_public_key
   local tfvars_path="/home/richard/homelab/terraform/production/prod.auto.tfvars"
+
+  cloudinit_public_key=$(cat "$HOME/.ssh/homelab/cloudinit.pub")
   
   read -s -p "please enter the cloudinit user password: " cloudinit_password
 
@@ -182,14 +183,16 @@ cloudinit_password = "$cloudinit_password"
 function clone_git_repos() {
   local repos=("https://github.com/RichNye/homelab.git" "https://github.com/RichNye/MealPlannerApi.git" "https://github.com/RichNye/MealPlannerFrontend")
 
-  for repo in ${repos[@]}; do
-    local repoName=$(echo "$repo" | awk -F'/' '{print $NF}' | awk -F'.' '{print $1}')
-    if [ ! -d "$HOME/$repoName" ]; then
-      echo "cloning $repoName..."
-      mkdir -p "$HOME/$repoName" # have to make the directory first to avoid 'is not an empty directory' error when cloning
-      git clone "$repo" "$HOME/$repoName"
+  for repo in "${repos[@]}"; do
+    local repo_name
+    repo_name=$(echo "$repo" | awk -F'/' '{print $NF}' | awk -F'.' '{print $1}')
+    
+    if [[ ! -d "$HOME/$repo_name" ]]; then
+      echo "cloning $repo_name..."
+      mkdir -p "$HOME/$repo_name" # have to make the directory first to avoid 'is not an empty directory' error when cloning
+      git clone "$repo" "$HOME/$repo_name"
     else
-      echo "$repoName already cloned. Delete folder if you wish to clone again."
+      echo "$repo_name already cloned. Delete folder if you wish to clone again."
     fi
   done
 }
@@ -199,7 +202,7 @@ function clone_git_repos() {
 #####################
 
 # check Proxmox connection via environment variables
-if [[ "${proxmox_check}" = true ]]; then
+if [[ "$proxmox_check" = true ]]; then
   check_proxmox_connection
 fi
 
@@ -214,7 +217,7 @@ if ! dpkg -s git &> /dev/null; then
   echo "git not installed - installing..."
   sudo apt install -y git
 fi
-if [[ "${clone_repo}" = true ]]; then
+if [[ "$clone_repo" = true ]]; then
   echo "cloning repos..."
   clone_git_repos
 fi
@@ -225,3 +228,4 @@ create_selfhosted_runner
 create_ssh_keys
 create_tfvars_file
 
+echo "Move on to running terraform.sh when ready to deploy infra!"
