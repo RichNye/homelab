@@ -25,7 +25,7 @@ set -euo pipefail
 # Variable declaration
 #######################
 
-proxmox_check=true
+proxmox_check=false
 clone_repo=true
 
 readonly homelab_repo_url="https://github.com/RichNye/homelab.git"
