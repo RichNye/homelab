@@ -197,6 +197,22 @@ function clone_git_repos() {
   done
 }
 
+# Terraform and Ansible have other steps than just "apt install"
+# This function is for any package that can simply be installed from default repos.
+function install_other_prereqs() {
+  local packages=("sops" "age")
+
+  for package in "${packages[@]}"; do
+    if dpkg -s "$package" &> /dev/null; then
+      echo "$package already installed, skipping..."
+    else 
+      echo "$package not installed, installing..."
+      sudo apt update
+      sudo apt install -y $package
+    fi
+  done
+}
+
 #####################
 # Main script
 #####################
@@ -206,11 +222,9 @@ if [[ "$proxmox_check" = true ]]; then
   check_proxmox_connection
 fi
 
-# install Terraform and prereqs
 install_terraform
-
-# install Ansible and prereqs
 install_ansible
+install_other_prereqs
 
 # check for git and clone git repo if not skipped
 if ! dpkg -s git &> /dev/null; then
