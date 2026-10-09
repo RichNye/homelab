@@ -169,7 +169,7 @@ function create_tfvars_file() {
   local cloudinit_public_key
   local tfvars_path="$HOME/homelab/terraform/production/prod.auto.tfvars"
 
-  cloudinit_public_key=$(cat "$HOME/homelab/.ssh/homelab/cloudinit.pub")
+  cloudinit_public_key=$(cat "$HOME/.ssh/homelab/cloudinit.pub")
   
   read -s -p "please enter the cloudinit user password: " cloudinit_password
 
