@@ -228,4 +228,4 @@ create_selfhosted_runner
 create_ssh_keys
 create_tfvars_file
 
-echo "Move on to running terraform.sh when ready to deploy infra!"
+echo "\nMove on to running terraform.sh when ready to deploy infra!"
