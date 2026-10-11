@@ -13,3 +13,5 @@
 *.exe
 
 secrets.yaml
+
+*.DS_Store
