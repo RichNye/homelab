@@ -30,6 +30,10 @@ do
       terraformRefresh=true
     ;;
 
+    destroy)
+      terraformDestroy=true
+    ;;
+
     --environment)
       environment=$parameter
     ;;
@@ -132,9 +136,18 @@ function terraform_apply() {
 
 function terraform_refresh() {
     if [ "${terraformRefresh}" = true ]; then
+        get_proxmox_api_key
         terraform refresh
         exit 0
     fi    
+}
+
+function terraform_destroy() {
+    if [[ "$terraformDestroy" = true ]]; then
+        get_proxmox_api_key
+        terraform destroy
+        exit 0
+    fi
 }
 
 ####################
@@ -147,3 +160,4 @@ terraform_init
 terraform_plan
 terraform_apply
 terraform_refresh
+terraform_destroy

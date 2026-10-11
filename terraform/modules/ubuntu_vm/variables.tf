@@ -110,7 +110,7 @@ variable "hotplug" {
 variable "bios_type" {
   description = "BIOS type for VMs"
   type = string
-  default = "ovmf"
+  default = "seabios"
 }
 
 variable "machine_type" {

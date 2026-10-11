@@ -1,6 +1,6 @@
 module "web_vm" {
   source = "../modules/ubuntu_vm"
-
+  count = 0
   vm_name              = "web-01"
   vm_description       = "Web Server VM"
   vm_cores             = 1
@@ -13,7 +13,7 @@ module "web_vm" {
   cloudinit_password   = var.cloudinit_password
   vm_disks = [
     {
-      slot    = "virtio0"
+      slot    = "scsi0"
       size    = "32G"
       storage = "data-sata"
       type    = "disk"
@@ -43,7 +43,7 @@ module "db_vm" {
   cloudinit_password   = var.cloudinit_password
   vm_disks = [
     {
-      slot    = "virtio0"
+      slot    = "scsi0"
       size    = "64G"
       storage = "data-sata"
       type    = "disk"
@@ -60,7 +60,7 @@ module "db_vm" {
 
 module "lb_vm" {
   source = "../modules/ubuntu_vm"
-  count = 1
+  count = 0
   vm_name              = "lb-01"
   vm_description       = "Load Balancer VM"
   vm_cores             = 1
@@ -73,7 +73,7 @@ module "lb_vm" {
   cloudinit_password   = var.cloudinit_password
   vm_disks = [
     {
-      slot    = "virtio0"
+      slot    = "scsi0"
       size    = "32G"
       storage = "data-sata"
       type    = "disk"
@@ -90,7 +90,7 @@ module "lb_vm" {
 
 module "monitor_vm" {
   source = "../modules/ubuntu_vm"
-  count = 1
+  count = 0
   vm_name              = "monitor-01"
   vm_description       = "Monitoring VM"
   vm_cores             = 1
@@ -103,7 +103,7 @@ module "monitor_vm" {
   cloudinit_password   = var.cloudinit_password
   vm_disks = [
     {
-      slot    = "virtio0"
+      slot    = "scsi0"
       size    = "32G"
       storage = "data-sata"
       type    = "disk"
