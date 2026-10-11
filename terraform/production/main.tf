@@ -37,7 +37,7 @@ module "web_vm" {
   vm_memory            = 1024
   vm_tags              = "web,prod"
   proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
+  ubuntu_template_name = "ubuntu-template"
   ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
@@ -67,7 +67,7 @@ module "db_vm" {
   vm_memory            = 2048
   vm_tags              = "database,prod"
   proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
+  ubuntu_template_name = "ubuntu-template"
   ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
@@ -97,7 +97,7 @@ module "lb_vm" {
   vm_memory            = 1024
   vm_tags              = "loadbalancer,haproxy,prod"
   proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
+  ubuntu_template_name = "ubuntu-template"
   ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
@@ -127,7 +127,7 @@ module "monitor_vm" {
   vm_memory            = 1024
   vm_tags              = "monitoring,prometheus,grafana,prod"
   proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
+  ubuntu_template_name = "ubuntu-template"
     ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
