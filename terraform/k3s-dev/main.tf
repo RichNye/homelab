@@ -17,7 +17,7 @@ module "k3s-control" {
     {
       slot    = "virtio0"
       size    = "32G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]
@@ -49,7 +49,7 @@ module "k3s-worker" {
     {
       slot    = "virtio0"
       size    = "32G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]

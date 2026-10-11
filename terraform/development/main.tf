@@ -16,7 +16,7 @@ module "web_vm_dev" {
     {
       slot    = "virtio0"
       size    = "32G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]
@@ -47,7 +47,7 @@ module "db_vm_dev" {
     {
       slot    = "virtio0"
       size    = "64G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]

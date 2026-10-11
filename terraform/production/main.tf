@@ -1,33 +1,3 @@
-module "ansible_vm" {
-  source = "../modules/ubuntu_vm"
-
-  vm_name              = "ansible-01"
-  vm_description       = "Ansible VM"
-  vm_cores             = 2
-  vm_memory            = 2048
-  vm_tags              = "ansible,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-template"
-  ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "virtio0"
-      size    = "32G"
-      storage = "data-hdd"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = "0"
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
-}
-
 module "web_vm" {
   source = "../modules/ubuntu_vm"
 
@@ -45,7 +15,7 @@ module "web_vm" {
     {
       slot    = "virtio0"
       size    = "32G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]
@@ -75,7 +45,7 @@ module "db_vm" {
     {
       slot    = "virtio0"
       size    = "64G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]
@@ -105,7 +75,7 @@ module "lb_vm" {
     {
       slot    = "virtio0"
       size    = "32G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]
@@ -135,7 +105,7 @@ module "monitor_vm" {
     {
       slot    = "virtio0"
       size    = "32G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]

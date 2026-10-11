@@ -51,7 +51,7 @@ variable "vm_disks" {
     {
       slot    = "virtio0"
       size    = "32G"
-      storage = "data-hdd"
+      storage = "data-sata"
       type    = "disk"
     }
   ]
@@ -164,7 +164,7 @@ variable "cloudinit_diskconfig" {
   })
   default = {
     slot = "scsi1"
-    storage = "data-hdd"
+    storage = "data-sata"
     type = "cloudinit"
   }  
 }
