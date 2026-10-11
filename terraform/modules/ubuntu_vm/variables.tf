@@ -98,7 +98,7 @@ variable "scsihw" {
 variable "boot_order" {
   description = "Disk boot order"
   type = string
-  default = "order=virtio0"
+  default = "order=scsi0"
 }
 
 variable "hotplug" {
