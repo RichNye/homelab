@@ -1,68 +1,15 @@
-module "web_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 1
-  vm_name              = "web-01"
-  vm_description       = "Web Server VM"
-  vm_cores             = 1
-  vm_memory            = 1024
-  vm_tags              = "web,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-template"
-  ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-}
+module "vm" {
+  source   = "../modules/ubuntu_vm"
+  for_each = var.vm_list
 
-module "db_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 0
-  vm_name              = "db-01"
-  vm_description       = "Database VM"
-  vm_cores             = 1
-  vm_memory            = 2048
-  vm_tags              = "database,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-template"
-  ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
+  vm_name        = each.key
+  vm_description = each.value.vm_description
+  vm_cores       = each.value.vm_cores
+  vm_memory      = each.value.vm_memory
+  vm_tags        = join(",", each.value.vm_tags)
+  vm_disks       = each.value.vm_disks # null check here?
 
-  vm_disks = [
-    {
-      slot = "scsi0"
-      size = "50G"
-      storage = "data-sata"
-      type = "disk"
-    }
-  ]
-}
-
-module "lb_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 0
-  vm_name              = "lb-01"
-  vm_description       = "Load Balancer VM"
-  vm_cores             = 1
-  vm_memory            = 1024
-  vm_tags              = "loadbalancer,haproxy,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-template"
-  ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-}
-
-module "monitor_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 0
-  vm_name              = "monitor-01"
-  vm_description       = "Monitoring VM"
-  vm_cores             = 1
-  vm_memory            = 1024
-  vm_tags              = "monitoring,prometheus,grafana,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-template"
-  ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
+  ssh_public_key     = var.ssh_public_key
+  cloudinit_username = var.cloudinit_username
+  cloudinit_password = var.cloudinit_password
 }

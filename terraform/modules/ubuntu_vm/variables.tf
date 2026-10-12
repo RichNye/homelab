@@ -41,6 +41,7 @@ variable "vm_description" {
 
 variable "vm_disks" {
   description = "Disks for the VM"
+  nullable = false
   type = list(object({
     slot    = string
     size    = string
