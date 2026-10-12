@@ -17,7 +17,7 @@ environment="production"
 
 for parameter in "$@"
 do
-  case "${parameter}" in
+  case "$parameter" in
     apply)
       terraformApply=true
     ;;
@@ -35,11 +35,11 @@ do
     ;;
 
     --environment)
-      environment=$parameter
+      environment="$parameter"
     ;;
 
     *)
-      echo "Unknown option: "${parameter}""
+      echo "Unknown option: $parameter"
       exit 1
     ;;
   esac
@@ -57,21 +57,21 @@ function get_remote_state_access_key() {
     local decrypted
     decrypted="$(sops -d "${file}")" || { echo "Failed to decrypt ${file}"; exit 1; }
     local accessKeyLine accessSecretLine
-    accessKeyLine="$(awk -F= -v k="${accessKeyName}" '$1==k' <<< "${decrypted}")"
-    accessSecretLine="$(awk -F= -v k="${accessSecretName}" '$1==k' <<< "${decrypted}")"
+    accessKeyLine="$(awk -F= -v k="$accessKeyName" '$1==k' <<< "$decrypted")"
+    accessSecretLine="$(awk -F= -v k="$accessSecretName" '$1==k' <<< "$decrypted")"
 
     if [ -z "${accessKeyLine}" ]; then
-        echo "Access key not found in ${file}, exiting..."
+        echo "Access key not found in $file, exiting..."
         exit 1
     fi
 
-    if [ -z "${accessSecretLine}" ]; then
-        echo "Access secret not found in ${file}, exiting..."
+    if [ -z "$accessSecretLine" ]; then
+        echo "Access secret not found in $file, exiting..."
         exit 1
     fi
 
-    export "${accessKeyLine}"
-    export "${accessSecretLine}"
+    export "$accessKeyLine"
+    export "$accessSecretLine"
 }
 
 function get_proxmox_api_key() {
@@ -80,21 +80,21 @@ function get_proxmox_api_key() {
     local pm_api_key_id="PM_API_TOKEN_ID"
     local pm_api_key="PM_API_TOKEN_SECRET"
 
-    [ ! -f "${file}" ] && echo "File not found: ${file}" && return 1
+    [ ! -f "$file" ] && echo "File not found: $file" && return 1
 
     local decrypted
-    decrypted="$(sops -d "${file}")" || { echo "Failed to decrypt ${file}"; exit 1; }
+    decrypted="$(sops -d "$file")" || { echo "Failed to decrypt $file"; exit 1; }
     local pm_key_id_line pm_api_value_line
-    pm_key_id_line="$(awk -F= -v k="${pm_api_key_id}" '$1==k' <<< "${decrypted}")"
-    pm_api_value_line="$(awk -F= -v k="${pm_api_key}" '$1==k' <<< "${decrypted}")"
+    pm_key_id_line="$(awk -F= -v k="$pm_api_key_id" '$1==k' <<< "$decrypted")"
+    pm_api_value_line="$(awk -F= -v k="$pm_api_key" '$1==k' <<< "$decrypted")"
 
-    if [ -z "${pm_key_id_line}" ]; then
-        echo "Access key not found in ${file}, exiting..."
+    if [ -z "$pm_key_id_line" ]; then
+        echo "Access key not found in $file, exiting..."
         exit 1
     fi
 
-    if [ -z "${pm_api_value_line}" ]; then
-        echo "Access secret not found in ${file}, exiting..."
+    if [ -z "$pm_api_value_line" ]; then
+        echo "Access secret not found in $file, exiting..."
         exit 1
     fi
 
@@ -119,7 +119,7 @@ function terraform_init () {
 }
 
 function terraform_plan () {
-    if [ "${terraformPlan}" =  true ]; then
+    if [ "$terraformPlan" =  true ]; then
         get_proxmox_api_key
         terraform plan
         exit 0
@@ -127,7 +127,7 @@ function terraform_plan () {
 }
 
 function terraform_apply() {
-    if [ "${terraformApply}" = true ]; then
+    if [ "$terraformApply" = true ]; then
         get_proxmox_api_key
         terraform apply
         exit 0
@@ -135,7 +135,7 @@ function terraform_apply() {
 }
 
 function terraform_refresh() {
-    if [ "${terraformRefresh}" = true ]; then
+    if [ "$terraformRefresh" = true ]; then
         get_proxmox_api_key
         terraform refresh
         exit 0
