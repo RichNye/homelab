@@ -49,7 +49,7 @@ variable "vm_disks" {
   }))
   default = [
     {
-      slot    = "virtio0"
+      slot    = "scsi0"
       size    = "32G"
       storage = "data-sata"
       type    = "disk"

@@ -1,6 +1,6 @@
 module "web_vm" {
-  source               = "../modules/ubuntu_vm"
-  count                = 0
+  source = "../modules/ubuntu_vm"
+  count = 1
   vm_name              = "web-01"
   vm_description       = "Web Server VM"
   vm_cores             = 1
@@ -11,26 +11,11 @@ module "web_vm" {
   ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "scsi0"
-      size    = "32G"
-      storage = "data-sata"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
 }
 
 module "db_vm" {
   source = "../modules/ubuntu_vm"
-
+  count = 0
   vm_name              = "db-01"
   vm_description       = "Database VM"
   vm_cores             = 1
@@ -41,26 +26,20 @@ module "db_vm" {
   ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
+
   vm_disks = [
     {
-      slot    = "scsi0"
-      size    = "64G"
+      slot = "scsi0"
+      size = "50G"
       storage = "data-sata"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
+      type = "disk"
     }
   ]
 }
 
 module "lb_vm" {
-  source               = "../modules/ubuntu_vm"
-  count                = 0
+  source = "../modules/ubuntu_vm"
+  count = 0
   vm_name              = "lb-01"
   vm_description       = "Load Balancer VM"
   vm_cores             = 1
@@ -71,26 +50,11 @@ module "lb_vm" {
   ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "scsi0"
-      size    = "32G"
-      storage = "data-sata"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
 }
 
 module "monitor_vm" {
-  source               = "../modules/ubuntu_vm"
-  count                = 0
+  source = "../modules/ubuntu_vm"
+  count = 0
   vm_name              = "monitor-01"
   vm_description       = "Monitoring VM"
   vm_cores             = 1
@@ -101,19 +65,4 @@ module "monitor_vm" {
   ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "scsi0"
-      size    = "32G"
-      storage = "data-sata"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
 }
