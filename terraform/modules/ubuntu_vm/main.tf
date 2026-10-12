@@ -23,7 +23,7 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
   tags        = var.vm_tags
   boot        = var.boot_order
   hotplug     = var.hotplug
-  bios        = var.bios_type 
+  bios        = var.bios_type
   machine     = var.machine_type
 
   # cloud-init settings
@@ -50,7 +50,7 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
   dynamic "disk" {
     for_each = var.vm_disks
     content {
-      format = "raw"
+      format  = "raw"
       slot    = disk.value.slot
       size    = disk.value.size
       storage = disk.value.storage

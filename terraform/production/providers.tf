@@ -1,14 +1,14 @@
 terraform {
   required_providers {
     proxmox = {
-      source = "Telmate/proxmox"
+      source  = "Telmate/proxmox"
       version = "3.0.2-rc10"
     }
   }
 
   backend "s3" {
     bucket = "homelab-tfstate"
-    key = "homelab/production.tfstate" # not how this should work for multiple environments - see my blog post.
+    key    = "homelab/production.tfstate" # not how this should work for multiple environments - see my blog post.
     region = "auto"
 
     # leverage AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables for secure auth
@@ -20,12 +20,12 @@ terraform {
     skip_s3_checksum            = true
     use_path_style              = true
 
-    endpoints = { s3 = "https://0d8b44a2f39e8ada9add507a23f368ea.r2.cloudflarestorage.com" }  
+    endpoints = { s3 = "https://0d8b44a2f39e8ada9add507a23f368ea.r2.cloudflarestorage.com" }
   }
 }
 
 provider "proxmox" {
-  pm_api_url = "https://192.168.178.50:8006/api2/json"
+  pm_api_url      = "https://192.168.178.50:8006/api2/json"
   pm_tls_insecure = true
 }
 

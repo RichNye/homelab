@@ -1,6 +1,6 @@
 module "web_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 0
+  source               = "../modules/ubuntu_vm"
+  count                = 0
   vm_name              = "web-01"
   vm_description       = "Web Server VM"
   vm_cores             = 1
@@ -59,8 +59,8 @@ module "db_vm" {
 }
 
 module "lb_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 0
+  source               = "../modules/ubuntu_vm"
+  count                = 0
   vm_name              = "lb-01"
   vm_description       = "Load Balancer VM"
   vm_cores             = 1
@@ -89,8 +89,8 @@ module "lb_vm" {
 }
 
 module "monitor_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 0
+  source               = "../modules/ubuntu_vm"
+  count                = 0
   vm_name              = "monitor-01"
   vm_description       = "Monitoring VM"
   vm_cores             = 1
@@ -98,7 +98,7 @@ module "monitor_vm" {
   vm_tags              = "monitoring,prometheus,grafana,prod"
   proxmox_host         = "RN-PROXMOX01"
   ubuntu_template_name = "ubuntu-template"
-    ssh_public_key       = var.ssh_public_key
+  ssh_public_key       = var.ssh_public_key
   cloudinit_username   = var.cloudinit_username
   cloudinit_password   = var.cloudinit_password
   vm_disks = [
