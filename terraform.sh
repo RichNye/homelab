@@ -9,41 +9,8 @@
 terraformApply=false
 terraformPlan=false
 terraformRefresh=false
+terraformDestroy=false
 environment="production"
-
-############
-# process script parameters
-############
-
-for parameter in "$@"
-do
-  case "$parameter" in
-    apply)
-      terraformApply=true
-    ;;
-
-    plan)
-      terraformPlan=true
-    ;;
-
-    refresh)
-      terraformRefresh=true
-    ;;
-
-    destroy)
-      terraformDestroy=true
-    ;;
-
-    --environment)
-      environment="$parameter"
-    ;;
-
-    *)
-      echo "Unknown option: $parameter"
-      exit 1
-    ;;
-  esac
-done
 
 function get_remote_state_access_key() {
     echo "hello"
@@ -150,6 +117,8 @@ function terraform_destroy() {
     fi
 }
 
+
+
 ####################
 # MAIN SCRIPT
 ####################
@@ -157,7 +126,47 @@ echo "running script..."
 get_remote_state_access_key
 set_working_directory
 terraform_init
-terraform_plan
-terraform_apply
-terraform_refresh
-terraform_destroy
+
+############
+# process script parameters
+############
+
+for parameter in "$@"
+do
+  case "$parameter" in
+    apply)
+      terraformApply=true
+      terraform_apply
+    ;;
+
+    plan)
+      terraformPlan=true
+      terraform_plan
+    ;;
+
+    refresh)
+      terraformRefresh=true
+      terraform_refresh
+    ;;
+
+    destroy)
+      terraformDestroy=true
+      terraform_destroy
+    ;;
+
+    --environment)
+      environment="$parameter"
+    ;;
+
+    *)
+      echo "Unknown option: $parameter"
+      exit 1
+    ;;
+  esac
+done
+
+
+
+
+
+
