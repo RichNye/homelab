@@ -13,7 +13,6 @@ terraformDestroy=false
 environment="production"
 
 function get_remote_state_access_key() {
-    echo "hello"
     # tweaked from source jfmaes.me/blog/stop-committing-your-secrets-you-know-who-you-are/
     local file="$HOME/homelab/.enc.env"
     local accessKeyName="AWS_ACCESS_KEY_ID"
@@ -71,7 +70,6 @@ function get_proxmox_api_key() {
 
 function set_working_directory() {
     if [ -d "$HOME/homelab/terraform/$environment" ]; then
-        echo "setting directory to $environment tf folder..."
         cd $HOME/homelab/terraform/$environment
     else
         echo "folder for environment $environment doesn't exist. Exiting..."
@@ -125,7 +123,7 @@ function terraform_destroy() {
 echo "running script..."
 get_remote_state_access_key
 set_working_directory
-terraform_init
+
 
 ############
 # process script parameters
@@ -136,22 +134,30 @@ do
   case "$parameter" in
     apply)
       terraformApply=true
+      terraform_init
       terraform_apply
     ;;
 
     plan)
       terraformPlan=true
+      terraform_init
       terraform_plan
     ;;
 
     refresh)
       terraformRefresh=true
+      terraform_init
       terraform_refresh
     ;;
 
     destroy)
       terraformDestroy=true
+      terraform_init
       terraform_destroy
+    ;;
+
+    output)
+      terraform output
     ;;
 
     --environment)
