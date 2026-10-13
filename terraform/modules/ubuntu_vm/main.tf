@@ -25,6 +25,13 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
   hotplug     = var.hotplug
   bios        = var.bios_type
   machine     = var.machine_type
+  vm_state = "running"
+  
+  startup_shutdown {
+    order = -1
+    shutdown_timeout = -1
+    startup_delay = -1
+  }
 
   # cloud-init settings
   ciuser     = var.cloudinit_username
