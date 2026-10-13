@@ -80,7 +80,7 @@ function set_working_directory() {
 # run init every time given that it's harmless and sets up environment on first run.
 # could be improved to detect errors from tf commands that require init and only call when needed.
 function terraform_init () {
-    terraform init
+    terraform init > /dev/null
 }
 
 function terraform_plan () {
@@ -120,9 +120,9 @@ function terraform_destroy() {
 ####################
 # MAIN SCRIPT
 ####################
-echo "running script..."
 get_remote_state_access_key
 set_working_directory
+terraform_init
 
 
 ############
@@ -134,30 +134,26 @@ do
   case "$parameter" in
     apply)
       terraformApply=true
-      terraform_init
       terraform_apply
     ;;
 
     plan)
       terraformPlan=true
-      terraform_init
       terraform_plan
     ;;
 
     refresh)
       terraformRefresh=true
-      terraform_init
       terraform_refresh
     ;;
 
     destroy)
       terraformDestroy=true
-      terraform_init
       terraform_destroy
     ;;
 
     output)
-      terraform output
+      terraform output -json
     ;;
 
     --environment)
