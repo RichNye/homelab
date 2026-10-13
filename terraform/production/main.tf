@@ -7,7 +7,7 @@ module "vm" {
   vm_cores       = each.value.vm_cores
   vm_memory      = each.value.vm_memory
   vm_tags        = join(",", each.value.vm_tags)
-  vm_disks       = each.value.vm_disks # null check here?
+  vm_disks       = each.value.vm_disks
 
   ssh_public_key     = var.ssh_public_key
   cloudinit_username = var.cloudinit_username
