@@ -40,13 +40,8 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
     id = var.serial_id
   }
 
-  # disk outside of the loop to ensure cloudinit always exists where the template needs it.
-  disk {
-    slot    = var.cloudinit_diskconfig.slot
-    storage = var.cloudinit_diskconfig.storage
-    type    = var.cloudinit_diskconfig.type
-  }
-
+  # must be declared before the cloudinit disk to stop apply commands
+  # attempting to swap them.
   dynamic "disk" {
     for_each = var.vm_disks
     content {
@@ -56,6 +51,14 @@ resource "proxmox_vm_qemu" "ubuntu_vm" {
       storage = disk.value.storage
       type    = disk.value.type
     }
+  }
+
+  # create the data disks first, then add cloudinit to next available scsi slot.
+  # fixes an issue where 'terraform apply' commands tried to always swap the data/ci disks.
+  disk {
+    slot    = "scsi${length(var.vm_disks)}"
+    storage = var.cloudinit_diskconfig.storage
+    type    = var.cloudinit_diskconfig.type
   }
 
   dynamic "network" {
