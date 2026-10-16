@@ -4,11 +4,15 @@ terraform {
       source  = "Telmate/proxmox"
       version = "3.0.2-rc10"
     }
+    ansible = {
+      source = "ansible/ansible"
+      version = "1.5.0"
+    }
   }
 
   backend "s3" {
     bucket = "homelab-tfstate"
-    key    = "homelab/production.tfstate" # not how this should work for multiple environments - see my blog post.
+    key    = "homelab/production.tfstate" # not how this should work for multiple environments
     region = "auto"
 
     # leverage AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY env variables for secure auth
@@ -28,6 +32,7 @@ provider "proxmox" {
   pm_api_url      = "https://192.168.178.50:8006/api2/json"
   pm_tls_insecure = true
 }
+
 
 
 

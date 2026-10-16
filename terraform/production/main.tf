@@ -13,3 +13,8 @@ module "vm" {
   cloudinit_username = var.cloudinit_username
   cloudinit_password = var.cloudinit_password
 }
+
+resource "ansible_host" "web" {
+  name = "web-01"
+  groups = ["prod", "web"]
+}

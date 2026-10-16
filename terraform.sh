@@ -1,3 +1,5 @@
+#!/usr/bincd /bash
+
 ##############
 # DESCRIPTION
 ##############
