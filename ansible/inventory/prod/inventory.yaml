@@ -2,10 +2,10 @@ all:
   children:
     web_servers:
       hosts:
-        web-01:
+        web-01.fritz.box:
     db_servers:
       hosts:
-        db-01:
+        db-01.fritz.box:
     lb_servers:
       hosts:
-        lb-01:
+        lb-01.fritz.box:
