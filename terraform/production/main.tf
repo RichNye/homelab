@@ -1,149 +1,20 @@
-module "ansible_vm" {
-  source = "../modules/ubuntu_vm"
+module "vm" {
+  source   = "../modules/ubuntu_vm"
+  for_each = var.vm_list
 
-  vm_name              = "ansible-01"
-  vm_description       = "Ansible VM"
-  vm_cores             = 2
-  vm_memory            = 2048
-  vm_tags              = "ansible,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
-    ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "virtio0"
-      size    = "32G"
-      storage = "data-hdd"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = "0"
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
+  vm_name        = each.key
+  vm_description = each.value.vm_description
+  vm_cores       = each.value.vm_cores
+  vm_memory      = each.value.vm_memory
+  vm_tags        = join(",", each.value.vm_tags)
+  vm_disks       = each.value.vm_disks
+
+  ssh_public_key     = var.ssh_public_key
+  cloudinit_username = var.cloudinit_username
+  cloudinit_password = var.cloudinit_password
 }
 
-module "web_vm" {
-  source = "../modules/ubuntu_vm"
-
-  vm_name              = "web-01"
-  vm_description       = "Web Server VM"
-  vm_cores             = 1
-  vm_memory            = 1024
-  vm_tags              = "web,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
-    ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "virtio0"
-      size    = "32G"
-      storage = "data-hdd"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
-}
-
-module "db_vm" {
-  source = "../modules/ubuntu_vm"
-
-  vm_name              = "db-01"
-  vm_description       = "Database VM"
-  vm_cores             = 1
-  vm_memory            = 2048
-  vm_tags              = "database,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
-    ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "virtio0"
-      size    = "64G"
-      storage = "data-hdd"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
-}
-
-module "lb_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 1
-  vm_name              = "lb-01"
-  vm_description       = "Load Balancer VM"
-  vm_cores             = 1
-  vm_memory            = 1024
-  vm_tags              = "loadbalancer,haproxy,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
-    ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "virtio0"
-      size    = "32G"
-      storage = "data-hdd"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
-}
-
-module "monitor_vm" {
-  source = "../modules/ubuntu_vm"
-  count = 1
-  vm_name              = "monitor-01"
-  vm_description       = "Monitoring VM"
-  vm_cores             = 1
-  vm_memory            = 1024
-  vm_tags              = "monitoring,prometheus,grafana,prod"
-  proxmox_host         = "RN-PROXMOX01"
-  ubuntu_template_name = "ubuntu-2404-cloudinit-template"
-    ssh_public_key       = var.ssh_public_key
-  cloudinit_username   = var.cloudinit_username
-  cloudinit_password   = var.cloudinit_password
-  vm_disks = [
-    {
-      slot    = "virtio0"
-      size    = "32G"
-      storage = "data-hdd"
-      type    = "disk"
-    }
-  ]
-  vm_networks = [
-    {
-      id     = 0
-      model  = "virtio"
-      bridge = "vmbr0"
-    }
-  ]
+resource "ansible_host" "web" {
+  name = "web-01"
+  groups = ["prod", "web"]
 }

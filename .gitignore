@@ -9,7 +9,12 @@
 *.tfvars
 *.auto.tfvars
 
+# don't ignore the list of VMs per environment! We want this in the repo.
+!vm_list.auto.tfvars
+
 # OS / tooling artefacts
 *.exe
 
 secrets.yaml
+
+*.DS_Store

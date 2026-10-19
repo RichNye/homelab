@@ -7,7 +7,7 @@
   - name: install required packages
     ansible.builtin.apt:
       name:
-        - postgresql
+        - postgresql-{{ postgres_version }}
         - acl
         - python3-psycopg2
       state: present
@@ -55,7 +55,7 @@
 
   - name: add mealplanner user to pg_hba.conf
     community.postgresql.postgresql_pg_hba:
-      dest: /etc/postgresql/16/main/pg_hba.conf
+      dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
       contype: host
       users: "{{ database_user }}"
       source: "{{ local_subnet }}"
@@ -66,7 +66,7 @@
 
   - name: add monitoring user to pg_hba.conf
     community.postgresql.postgresql_pg_hba:
-      dest: /etc/postgresql/16/main/pg_hba.conf
+      dest: /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf
       contype: host
       users: "{{ monitoring_user }}"
       source: "{{ local_subnet }}"

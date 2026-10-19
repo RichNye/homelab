@@ -1,0 +1,9 @@
+creation_rules:
+  # .enc.env files
+  - path_regex: \.enc\.env(\..*)?$
+    age: >-
+      age1jzjmua3knq4e0py45ufwvkgjvhd2wu4fxhcptngwp7ew74h03a5q9wlt76
+  
+  # group_vars
+  - path_regex: group_vars/secrets\.yml
+    age: age1jzjmua3knq4e0py45ufwvkgjvhd2wu4fxhcptngwp7ew74h03a5q9wlt76
