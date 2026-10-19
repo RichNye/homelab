@@ -1,32 +1,10 @@
-remote_user: ENC[AES256_GCM,data:+z/Y6E4I,iv:jcg97FXinlIEwk8WJy2MPfUxyZtykDtRlXzr2cT+y70=,tag:UI/YV3wwm3X+17W2FxmoFw==,type:str]
-ansible_ssh_private_key_file: ENC[AES256_GCM,data:6D2d0FDpRZ9V2E12t/+Uz4Wz8uNm4oz+zAczmrZmXE+WZaq2,iv:hAmO58JU7GiT74fpltyNgbBnOu+yWkeBJfDfjGXe57c=,tag:ezTnUWri++Luyi8kScqZQw==,type:str]
-database_name: ENC[AES256_GCM,data:GLQ1KwI96s8DVWQ=,iv:G84w3leoTD9cqN0nz4tVKSDGS/WVvQDpKeXD0QegcgU=,tag:0MhWNgZheQpwiOxfWKQW5A==,type:str]
-database_user: ENC[AES256_GCM,data:Qx+M2vjmmBXked0=,iv:/JJASuMs6yaHOgEvgxDoPYH1PMMVJ61KkDYhF11Trq4=,tag:SsEnfFi/DjHUplgF1rudTA==,type:str]
-monitoring_user: ENC[AES256_GCM,data:IWVSftcglg==,iv:+I4uwkWm+fp770uJVGEaFcwP0GvCMu7jJcShGGcMw5Q=,tag:4gz6m2LcdAwLrRzoVMFklQ==,type:str]
-monitoring_password: ENC[AES256_GCM,data:eg2P/4B08Q==,iv:6ttjWoKHgIz8LNDd2QMuuqTclZ4A5vQs/Qdu/OJ7Bnc=,tag:07v0w6/CjfpDEE2/3/G//w==,type:str]
-app_path: ENC[AES256_GCM,data:ZHV6s5COSeUWN1TlXQ0yAR0Tfw==,iv:4iod6EWgCLLZpwd7ry58KqGguhSK1TyDWfv6YHlT8Q8=,tag:JxyysxUy7G3DpDwARI/njg==,type:str]
-app_environment: ENC[AES256_GCM,data:oIx4sQ9HCUfXZD8=,iv:rgfWwj69yInWCCu8Uk4gNz3z4FiWplo7IAlN5DIwXyM=,tag:wnldklNdkS2OGiKXR0ka4w==,type:str]
-local_subnet: ENC[AES256_GCM,data:jMSjfMIgR7pwg9TZwWV9Sg==,iv:tVP/1jVsvyYeo6IDdGHT4EyV0ZKdghGBgvn2VddF01A=,tag:PfKIJhCaBah7Fa2WLolDDQ==,type:str]
-database_password: ENC[AES256_GCM,data:sYhVA8yTF0c9vNs=,iv:bSKozJlSx0CfSoE6ltw2rLucsg8+mzA724Uxr3XjBSY=,tag:zKj0411zpHPLs3x9Nq9mbA==,type:str]
-mealplanner_release: ENC[AES256_GCM,data:Rw==,iv:Rb8Dv77CSnqUtWc6+4uzd2FBpo9kQvAJy6g/O6DGKuM=,tag:pgQ0Xcd69ki8r5G/7DqoFw==,type:str]
-postgres_version: ENC[AES256_GCM,data:938=,iv:zH0VqBnzm+nIf6iHw8EyH94LdjzM7mDaW3ccBm7R4QM=,tag:ffx/MyG1ODi0JZS0s5ajsg==,type:str]
-sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
-    age:
-        - recipient: age1jzjmua3knq4e0py45ufwvkgjvhd2wu4fxhcptngwp7ew74h03a5q9wlt76
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBwMkkwZEE0SGEwYStESnBt
-            V05ZNWZpSDRQUGoxQU4xcHFqcTFvWHlxUDFBCm9TeHkzMVRVYWF5RlZ1ekRKMGQy
-            TUd1RCtHbGFhc0JyZ1NlemUvM2IrY00KLS0tIE12WS9TYU0wOFl3OWZsSEw2Ny9I
-            R2RHMHNhZDdKWVhYMlB1RjFjVVJGYjAKzbbFjEVV/0h7m1cO2r0Nc/ixE2N+X+rP
-            3WE6CcyQXDuGe2m7YViYqaEVt1fttSUHMKgl4fUE+z+/oMBM4d5SeQ==
-            -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-10-19T09:59:00Z"
-    mac: ENC[AES256_GCM,data:kFKwGfI9xSryhFTG9RmaI6nYjl62xcU8Onb1bKHRYR/72WjNJYUra9Ki3qnSq7Yp3mimxst8w/pe/9OHNevv4BKeE1dohQl36Jn2O2i93S8WZZKBrMbiOWn6sNiZ8chKBGRcPLFSmU0Cqk6jHk/tWzVOZiS8913mLsDL91zBb+c=,iv:lJOhNU5C6jchPJI0WOK7y3DQamq/N4Nw+KZJweUQSOo=,tag:0dZnFA48gEMX5wxTpkh9sQ==,type:str]
-    pgp: []
-    unencrypted_suffix: _unencrypted
-    version: 3.9.4
+remote_user: ubuntu
+ansible_ssh_private_key_file: /home/richard/.ssh/homelab/cloudinit
+database_name: mealplanner
+database_user: mealplanner
+monitoring_user: monitor
+app_path: /opt/MealPlannerApi
+app_environment: Development
+local_subnet: 192.168.178.0/24
+mealplanner_release: "9"
+postgres_version: "18"
