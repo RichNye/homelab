@@ -4,17 +4,12 @@
   become: yes
 
   tasks:
-  - name: Read current release version on server
-    set_fact:
-      app_release: "{{ ansible_env.APP_RELEASE | default('UNSET') }}"
-
-  - name: Check current release vs server variable
-    set_fact:
-      app_release_matches: "{{ app_release == mealplanner_release }}"
-
-  - name: output current release values
-    ansible.builtin.debug:
-      msg: Environment variable is {{ ansible_env.APP_RELEASE }}, ansible playbook app_release is {{ app_release }}, inventory var is {{ mealplanner_release }}, and app_release_matches is {{ app_release_matches }}
+  - name: Install ASP.NET Core runtime
+    ansible.builtin.apt:
+      name:
+        - aspnetcore-runtime-{{ dotnet_version }}
+      state: present
+      update_cache: yes
 
   - name: Create web application directory
     ansible.builtin.file:
@@ -24,38 +19,36 @@
       group: "{{ remote_user }}"
       mode: "0755"
 
+  - name: Download mealplanner release
+    amazon.aws.s3_object:
+      mode: get
+      access_key: "{{ r2_access_key_id }}"
+      secret_key: "{{ r2_secret_access_key }}"
+      bucket: "{{ r2_bucket }}"
+      endpoint_url: "{{ r2_endpoint_url }}"
+      object: "releases/{{ mealplanner_release }}.tar.gz"
+      dest: "/tmp/{{ mealplanner_release }}.tar.gz"
+
+  - name: Extract mealplanner release
+    ansible.builtin.unarchive:
+      src: "/tmp/{{ mealplanner_release }}.tar.gz"
+      dest: "{{ app_path }}"
+      remote_src: yes
+      owner: "{{ remote_user }}"
+      group: "{{ remote_user }}"
+    notify:
+      - set app_release environment variable
+      - restart mealplannerapi
+
   - name: Create environment variable file
     ansible.builtin.copy:
       dest: "{{ app_path }}/.env"
       content: |
-        ASPNETCORE_ENVIRONMENT="{{ app_environment }}"        
+        ASPNETCORE_ENVIRONMENT="{{ app_environment }}"
       owner: "{{ remote_user }}"
       group: "{{ remote_user }}"
       mode: "0644"
-
-  - name: Copy web application files
-    ansible.builtin.copy:
-      src: "/opt/MealPlannerApi/releases/release-{{ mealplanner_release }}/"
-      dest: "{{ app_path }}"
-      owner: "{{ remote_user }}"
-      group: "{{ remote_user }}"
-      mode: "0755"
-      remote_src: false
-    when: not app_release_matches
-    changed_when: true
-    notify:
-      - restart mealplannerapi
-      - set app_release environment variable
-    
-  - name: Ensure MealPlannerApi binary is executable
-    ansible.builtin.file:
-      path: "{{ app_path }}/MealPlannerApi"
-      mode: "0755"
-      owner: "{{ remote_user }}"
-      group: "{{ remote_user }}"
-      state: file
-    notify:
-      - restart mealplannerapi
+    notify: restart mealplannerapi
 
   - name: Create systemd service file
     ansible.builtin.copy:
@@ -66,10 +59,10 @@
         After=network.target
 
         [Service]
-        User=ubuntu
+        User={{ remote_user }}
         EnvironmentFile={{ app_path }}/.env
         WorkingDirectory={{ app_path }}
-        ExecStart={{ app_path }}/MealPlannerApi
+        ExecStart=/usr/bin/dotnet {{ app_path }}/MealPlannerApi.dll
         Restart=always
         RestartSec=10
         KillSignal=SIGINT
@@ -97,12 +90,10 @@
     ansible.builtin.systemd:
       name: mealplannerapi
       state: restarted
-  
+
   - name: set app_release environment variable
     ansible.builtin.lineinfile:
       path: /etc/environment
       regexp: '^APP_RELEASE='
       line: "APP_RELEASE={{ mealplanner_release }}"
       create: yes
-  
-
