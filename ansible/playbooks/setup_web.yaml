@@ -26,7 +26,7 @@
       secret_key: "{{ r2_secret_access_key }}"
       bucket: "{{ r2_bucket }}"
       endpoint_url: "{{ r2_endpoint_url }}"
-      object: "releases/{{ mealplanner_release }}.tar.gz"
+      object: "releases/{{ mealplanner_release}}/{{ mealplanner_release }}.tar.gz"
       dest: "/tmp/{{ mealplanner_release }}.tar.gz"
 
   - name: Extract mealplanner release
@@ -62,7 +62,7 @@
         User={{ remote_user }}
         EnvironmentFile={{ app_path }}/.env
         WorkingDirectory={{ app_path }}
-        ExecStart=/usr/bin/dotnet {{ app_path }}/MealPlannerApi.dll
+        ExecStart=/usr/bin/dotnet {{ app_path }}/publish/MealPlannerApi.dll
         Restart=always
         RestartSec=10
         KillSignal=SIGINT

@@ -6,6 +6,6 @@ monitoring_user: monitor
 app_path: /opt/MealPlannerApi
 app_environment: Development
 local_subnet: 192.168.178.0/24
-mealplanner_release: "v0.0.2"
-dotnet_version: "9.0"
+mealplanner_release: "v0.0.3"
+dotnet_version: "10.0"
 postgres_version: "18"
